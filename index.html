@@ -1,0 +1,415 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>Juste Nous : Quiz Messages — À quel point vous connaissez-vous vraiment ?</title>
+  <meta name="description" content="Juste Nous transforme vos vrais messages en jeux de couple. Devinez, défiez-vous, découvrez qui connaît vraiment l'autre. 100 % en local sur votre téléphone." />
+
+  <!-- ============================================================
+       PARTAGE SOCIAL (Open Graph) — remplacez {{DOMAINE}}
+       {{DOMAINE}} = votre domaine custom OU votre URL github.io
+       ============================================================ -->
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="Juste Nous : Quiz Messages" />
+  <meta property="og:description" content="Vos vrais messages deviennent des jeux de couple. À quel point vous connaissez-vous vraiment ?" />
+  <meta property="og:url" content="https://{{DOMAINE}}/" />
+  <link rel="canonical" href="https://{{DOMAINE}}/" />
+
+  <!-- ============================================================
+       CLOUDFLARE WEB ANALYTICS (sans cookie)
+       Remplacez {{TOKEN_CLOUDFLARE}} par votre token de beacon.
+       C'est le seul script tiers de la page. Aucun cookie posé.
+       ============================================================ -->
+  <script defer src="https://static.cloudflareinsights.com/beacon.min.js"
+          data-cf-beacon='{"token": "{{TOKEN_CLOUDFLARE}}"}'></script>
+
+  <style>
+    /* ===== Identité visuelle Juste Nous =====
+       Jaune primaire   #FFDE59  (fonds de blocs)
+       Rose électrique  #ED5D91  (accents)
+       Rose profond     #C6316C  (fond des CTA — texte blanc AA >= 4.5:1)
+       Crème            #FFF6EC  (fond de page)
+       Anthracite       #2B2320  (texte)
+       RÈGLE : jamais de texte blanc sur fond jaune. Texte = anthracite. */
+    :root {
+      --jaune:   #FFDE59;
+      --rose:    #ED5D91;
+      --rose-cta:#C6316C;
+      --creme:   #FFF6EC;
+      --anthra:  #2B2320;
+      --radius:  20px;
+    }
+
+    * { box-sizing: border-box; }
+    html, body { margin: 0; padding: 0; }
+
+    body {
+      background: var(--creme);
+      color: var(--anthra);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      line-height: 1.45;
+      -webkit-font-smoothing: antialiased;
+      /* Une seule vue : on remplit la hauteur écran, l'action reste visible sans scroll */
+      min-height: 100vh;
+      min-height: 100svh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .wrap {
+      flex: 1 0 auto;
+      width: 100%;
+      max-width: 460px;
+      margin: 0 auto;
+      padding: clamp(20px, 6vw, 40px) 22px 16px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      text-align: center;
+    }
+
+    /* Wordmark texte (aucune image à charger) */
+    .brand {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      align-self: center;
+      background: var(--jaune);
+      color: var(--anthra);
+      font-weight: 800;
+      font-size: 15px;
+      letter-spacing: .2px;
+      padding: 8px 16px;
+      border-radius: 999px;
+      margin-bottom: clamp(18px, 5vw, 30px);
+    }
+    .brand .heart { color: var(--rose-cta); }
+
+    h1 {
+      font-size: clamp(28px, 8vw, 40px);
+      line-height: 1.1;
+      font-weight: 800;
+      margin: 0 0 14px;
+      letter-spacing: -0.5px;
+    }
+    .subtitle {
+      font-size: clamp(15px, 4.2vw, 18px);
+      margin: 0 auto 26px;
+      max-width: 34ch;
+      opacity: .9;
+    }
+
+    /* ===== Blocs d'action ===== */
+    .action { margin-top: 4px; }
+
+    .btn {
+      display: block;
+      width: 100%;
+      border: none;
+      border-radius: var(--radius);
+      padding: 17px 20px;
+      font-size: 18px;
+      font-weight: 800;
+      cursor: pointer;
+      text-decoration: none;
+      transition: transform .08s ease, filter .15s ease;
+    }
+    .btn:active { transform: scale(.98); }
+
+    /* CTA principal : rose profond + texte blanc (contraste AA 5.18:1) */
+    .btn-primary {
+      background: var(--rose-cta);
+      color: #ffffff;
+    }
+    .btn-primary:hover { filter: brightness(1.05); }
+    .btn:disabled { opacity: .6; cursor: default; }
+
+    .reassurance {
+      display: block;
+      font-size: 13px;
+      margin-top: 12px;
+      opacity: .75;
+    }
+
+    /* Séparateur "ou" pour la vue desktop (les deux options) */
+    .sep {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin: 22px 0;
+      color: var(--anthra);
+      opacity: .55;
+      font-size: 13px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+    .sep::before, .sep::after {
+      content: "";
+      flex: 1;
+      height: 1px;
+      background: rgba(43,35,32,.2);
+    }
+
+    /* ===== Bloc iOS (waitlist e-mail) ===== */
+    .ios-card {
+      background: var(--jaune);
+      border-radius: var(--radius);
+      padding: 20px 18px;
+      text-align: left;
+    }
+    .ios-card h2 {
+      margin: 0 0 4px;
+      font-size: 18px;
+      font-weight: 800;
+    }
+    .ios-card p { margin: 0 0 14px; font-size: 14px; }
+
+    .email-row { display: flex; flex-direction: column; gap: 10px; }
+    input[type="email"] {
+      width: 100%;
+      padding: 15px 16px;
+      font-size: 16px; /* >=16px : évite le zoom auto iOS */
+      border: 2px solid var(--anthra);
+      border-radius: 14px;
+      background: #fff;
+      color: var(--anthra);
+    }
+    input[type="email"]:focus {
+      outline: none;
+      border-color: var(--rose-cta);
+      box-shadow: 0 0 0 3px rgba(198,49,108,.25);
+    }
+    .form-msg {
+      font-size: 14px;
+      font-weight: 700;
+      margin-top: 12px;
+      min-height: 1.2em;
+    }
+    .form-msg.ok  { color: #1c6b3a; }   /* vert foncé lisible sur jaune */
+    .form-msg.err { color: #9e1b1b; }   /* rouge foncé lisible sur jaune */
+
+    /* Utilitaire d'affichage piloté par le JS */
+    [hidden] { display: none !important; }
+
+    /* ===== Footer ===== */
+    footer {
+      flex-shrink: 0;
+      text-align: center;
+      padding: 18px 22px 26px;
+      font-size: 13px;
+      opacity: .8;
+    }
+    footer a { color: var(--anthra); }
+    .dot { margin: 0 8px; opacity: .5; }
+  </style>
+</head>
+
+<body>
+  <main class="wrap">
+    <span class="brand"><span class="heart">♥</span> Juste Nous</span>
+
+    <h1>À quel point vous connaissez-vous&nbsp;vraiment&nbsp;?</h1>
+    <p class="subtitle">
+      Juste Nous transforme vos vrais messages en jeux de couple.
+      Devinez, défiez-vous, découvrez qui connaît vraiment l'autre.
+    </p>
+
+    <div class="action">
+      <!-- ===== Bloc Android : bouton Google Play (affiché selon l'OS) ===== -->
+      <div id="android-block" hidden>
+        <!-- href réel + paramètres UTM injectés au chargement par le JS -->
+        <a id="play-btn" class="btn btn-primary" href="{{URL_GOOGLE_PLAY}}" rel="noopener">
+          Télécharger sur Google Play
+        </a>
+        <small class="reassurance">Vos conversations ne quittent jamais votre téléphone.</small>
+      </div>
+
+      <!-- Séparateur affiché uniquement en vue desktop (les deux options) -->
+      <div id="separator" class="sep" hidden>ou</div>
+
+      <!-- ===== Bloc iOS : capture e-mail waitlist (affiché selon l'OS) ===== -->
+      <div id="ios-block" hidden>
+        <div class="ios-card">
+          <h2>Bientôt sur iPhone</h2>
+          <p>Laisse ton email, on te prévient au lancement.</p>
+
+          <!-- ATTENTION : remplacez {{ENDPOINT_FORMULAIRE}} par votre endpoint
+               Formspree (ex. https://formspree.io/f/xxxxxxx) ou Tally.
+               La soumission se fait en AJAX (pas de rechargement de page). -->
+          <form id="waitlist-form" action="{{ENDPOINT_FORMULAIRE}}" method="POST" novalidate>
+            <div class="email-row">
+              <input
+                type="email"
+                name="email"
+                inputmode="email"
+                autocomplete="email"
+                placeholder="ton@email.com"
+                aria-label="Adresse email"
+                required
+              />
+              <button type="submit" class="btn btn-primary">Me prévenir</button>
+            </div>
+            <!-- Champ caché : d'où vient l'inscription (rempli par le JS) -->
+            <input type="hidden" name="source" id="ios-source" value="landing" />
+            <p id="form-msg" class="form-msg" role="status" aria-live="polite"></p>
+          </form>
+        </div>
+        <small class="reassurance">Vos conversations ne quittent jamais votre téléphone.</small>
+      </div>
+    </div>
+  </main>
+
+  <footer>
+    <a href="privacy.html">Politique de confidentialité</a>
+    <span class="dot">•</span>
+    <!-- Remplacez {{NOM_EDITEUR}} par votre nom d'éditeur -->
+    © {{NOM_EDITEUR}}
+  </footer>
+
+  <script>
+    (function () {
+      "use strict";
+
+      /* ============================================================
+         1) ATTRIBUTION UTM → bouton Google Play
+         On lit les paramètres d'URL entrants et on les ré-injecte
+         sur le lien Play, à la fois :
+           - tels quels (utm_source, utm_medium, etc.)
+           - regroupés dans le paramètre "referrer" que Play Console
+             lit réellement pour attribuer l'installation.
+         ============================================================ */
+      var incoming = new URLSearchParams(window.location.search);
+      var playBtn = document.getElementById("play-btn");
+
+      if (playBtn) {
+        var base = playBtn.getAttribute("href").split("#")[0];
+        var baseParts = base.split("?");
+        var target = new URLSearchParams(baseParts[1] || ""); // params déjà dans {{URL_GOOGLE_PLAY}}
+
+        // Paramètres d'attribution à conserver
+        var keep = ["utm_source", "utm_medium", "utm_campaign", "utm_term", "utm_content", "referrer"];
+        var referrerBits = [];
+
+        keep.forEach(function (key) {
+          var val = incoming.get(key);
+          if (val) {
+            // (a) on garde le paramètre tel quel sur l'URL
+            target.set(key, val);
+            // (b) et on l'ajoute au futur "referrer" (sauf le referrer lui-même)
+            if (key !== "referrer") {
+              referrerBits.push(key + "=" + val);
+            }
+          }
+        });
+
+        // Si aucun "referrer" fourni mais des UTM présents, on en construit un
+        if (!incoming.get("referrer") && referrerBits.length) {
+          target.set("referrer", referrerBits.join("&"));
+        }
+
+        var qs = target.toString();
+        playBtn.setAttribute("href", baseParts[0] + (qs ? "?" + qs : ""));
+      }
+
+      /* ============================================================
+         2) DÉTECTION OS → quel bloc afficher
+         Android          → bouton Google Play
+         iPhone/iPad/iPod → formulaire email
+         Desktop/autre    → les deux (+ séparateur)
+         Pas de redirection automatique : l'utilisateur clique.
+         ============================================================ */
+      var ua = navigator.userAgent || "";
+      var isAndroid = /android/i.test(ua);
+      // iPad récents se présentent comme "Macintosh" + écran tactile
+      var isIOS = /iphone|ipad|ipod/i.test(ua) ||
+                  (/Macintosh/.test(ua) && "ontouchend" in document);
+
+      var androidBlock = document.getElementById("android-block");
+      var iosBlock = document.getElementById("ios-block");
+      var separator = document.getElementById("separator");
+      var iosSource = document.getElementById("ios-source");
+
+      if (isAndroid) {
+        androidBlock.hidden = false;
+        if (iosSource) iosSource.value = "android";
+      } else if (isIOS) {
+        iosBlock.hidden = false;
+        if (iosSource) iosSource.value = "ios";
+      } else {
+        // Desktop / autre : on montre les deux
+        androidBlock.hidden = false;
+        separator.hidden = false;
+        iosBlock.hidden = false;
+        if (iosSource) iosSource.value = "desktop";
+      }
+
+      /* ============================================================
+         3) FORMULAIRE WAITLIST iOS (AJAX, sans rechargement)
+         Compatible Formspree (JSON) et endpoints statiques.
+         ============================================================ */
+      var form = document.getElementById("waitlist-form");
+      var msg = document.getElementById("form-msg");
+
+      if (form) {
+        form.addEventListener("submit", function (e) {
+          e.preventDefault();
+          msg.className = "form-msg";
+          msg.textContent = "";
+
+          var emailInput = form.querySelector('input[type="email"]');
+          var email = (emailInput.value || "").trim();
+
+          // Validation email côté client
+          var valid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+          if (!valid) {
+            msg.className = "form-msg err";
+            msg.textContent = "Oups, cet email n'a pas l'air valide.";
+            emailInput.focus();
+            return;
+          }
+
+          var btn = form.querySelector('button[type="submit"]');
+          var originalLabel = btn.textContent;
+          btn.disabled = true;
+          btn.textContent = "Envoi…";
+
+          var endpoint = form.getAttribute("action");
+          // Garde-fou : endpoint non configuré
+          if (endpoint.indexOf("{{") !== -1) {
+            btn.disabled = false;
+            btn.textContent = originalLabel;
+            msg.className = "form-msg err";
+            msg.textContent = "Formulaire non configuré (endpoint manquant).";
+            return;
+          }
+
+          fetch(endpoint, {
+            method: "POST",
+            body: new FormData(form),
+            headers: { "Accept": "application/json" }
+          })
+            .then(function (res) {
+              if (res.ok) {
+                form.reset();
+                msg.className = "form-msg ok";
+                msg.textContent = "C'est noté ! On te prévient dès la sortie iOS. ♥";
+              } else {
+                throw new Error("HTTP " + res.status);
+              }
+            })
+            .catch(function () {
+              msg.className = "form-msg err";
+              msg.textContent = "Erreur d'envoi. Réessaie dans un instant.";
+            })
+            .finally(function () {
+              btn.disabled = false;
+              btn.textContent = originalLabel;
+            });
+        });
+      }
+    })();
+  </script>
+</body>
+</html>

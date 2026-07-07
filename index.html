@@ -3,347 +3,546 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-  <title>Juste Nous : Quiz Messages — À quel point vous connaissez-vous vraiment ?</title>
-  <meta name="description" content="Juste Nous transforme vos vrais messages en jeux de couple. Devinez, défiez-vous, découvrez qui connaît vraiment l'autre. 100 % en local sur votre téléphone." />
+  <title>Juste Nous — Rejouez votre histoire. Le quiz de couple basé sur vos vrais messages.</title>
+  <meta name="description" content="Importez vos conversations WhatsApp, Instagram ou Snapchat : Juste Nous les transforme en jeux de couple. Devinez qui a dit quoi, défiez-vous, redécouvrez votre histoire. 100 % privé, tout reste sur votre téléphone." />
 
   <!-- PARTAGE SOCIAL (Open Graph) -->
   <meta property="og:type" content="website" />
   <meta property="og:title" content="Juste Nous : Quiz Messages" />
-  <meta property="og:description" content="Vos vrais messages deviennent des jeux de couple. À quel point vous connaissez-vous vraiment ?" />
+  <meta property="og:description" content="Vos vrais messages deviennent des jeux de couple. Rejouez votre histoire, découvrez qui connaît vraiment l'autre." />
   <meta property="og:url" content="https://justenous.github.io/" />
   <link rel="canonical" href="https://justenous.github.io/" />
 
-  <!-- Cloudflare Web Analytics (sans cookie) — seul script tiers, aucun cookie posé. -->
+  <!-- Détection OS AVANT le rendu (évite tout flash de mauvais CTA) -->
+  <script>
+    (function () {
+      var ua = navigator.userAgent || "";
+      var os = "desktop";
+      if (/android/i.test(ua)) os = "android";
+      else if (/iphone|ipad|ipod/i.test(ua) || (/Macintosh/.test(ua) && "ontouchend" in document)) os = "ios";
+      document.documentElement.setAttribute("data-os", os);
+    })();
+  </script>
 
+  <!-- Cloudflare Web Analytics (sans cookie) — seul script tiers, aucun cookie posé. -->
   <script defer src="https://static.cloudflareinsights.com/beacon.min.js"
           data-cf-beacon='{"token": "4acbc3971ac8401a97aee69ae58585d1"}'></script>
 
   <style>
-    /* ===== Identité visuelle Juste Nous =====
-       Jaune primaire   #FFDE59  (fonds de blocs)
-       Rose électrique  #ED5D91  (accents)
-       Rose profond     #C6316C  (fond des CTA — texte blanc AA >= 4.5:1)
-       Crème            #FFF6EC  (fond de page)
-       Anthracite       #2B2320  (texte)
-       RÈGLE : jamais de texte blanc sur fond jaune. Texte = anthracite. */
+    /* ===== Palette réelle de l'app "Juste Nous" (app_theme.dart) =====
+       Crème (fond)        #FFF6EC
+       Surface             #FFFDF9
+       Jaune joie          #FFDE59
+       Rose romantique     #E93982  (accents)
+       Rose profond        #C81E6A  (fond des CTA — texte blanc, contraste AA 5.46:1)
+       Encre (texte)       #34212C
+       Sous-texte          #8A7580
+       RÈGLE : jamais de texte blanc sur fond jaune. Texte = encre. */
     :root {
-      --jaune:   #FFDE59;
-      --rose:    #ED5D91;
-      --rose-cta:#C6316C;
       --creme:   #FFF6EC;
-      --anthra:  #2B2320;
-      --radius:  20px;
+      --surface: #FFFDF9;
+      --jaune:   #FFDE59;
+      --rose:    #E93982;
+      --rose-cta:#C81E6A;
+      --ink:     #34212C;
+      --sub:     #6E5A63;   /* sous-texte assombri pour contraste AA sur crème */
+      --radius:  22px;
+      --shadow:  0 18px 40px -18px rgba(52,33,44,.35);
     }
 
     * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
     html, body { margin: 0; padding: 0; }
 
     body {
       background: var(--creme);
-      color: var(--anthra);
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-      line-height: 1.45;
+      color: var(--ink);
+      font-family: ui-rounded, "SF Pro Rounded", "Segoe UI", system-ui, -apple-system, Roboto, Helvetica, Arial, sans-serif;
+      line-height: 1.5;
       -webkit-font-smoothing: antialiased;
-      /* Une seule vue : on remplit la hauteur écran, l'action reste visible sans scroll */
-      min-height: 100vh;
-      min-height: 100svh;
-      display: flex;
-      flex-direction: column;
+      overflow-x: hidden;
     }
 
-    .wrap {
-      flex: 1 0 auto;
-      width: 100%;
-      max-width: 460px;
-      margin: 0 auto;
-      padding: clamp(20px, 6vw, 40px) 22px 16px;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      text-align: center;
+    /* ===== Visibilité selon l'OS =====
+       Avant JS : les deux CTA s'affichent (comportement desktop). */
+    .only-desktop { display: none; }
+    [data-os="desktop"] .only-desktop { display: flex; }
+    [data-os="android"] .for-ios { display: none !important; }
+    [data-os="ios"] .for-android { display: none !important; }
+
+    a { color: var(--rose-cta); }
+    img, svg { max-width: 100%; }
+
+    .container { width: 100%; max-width: 1080px; margin: 0 auto; padding: 0 22px; }
+    .section { padding: clamp(48px, 9vw, 88px) 0; }
+
+    h1, h2, h3 { line-height: 1.08; letter-spacing: -0.5px; margin: 0; }
+    h1 { font-size: clamp(34px, 8.5vw, 60px); font-weight: 800; }
+    h2 { font-size: clamp(26px, 5.5vw, 40px); font-weight: 800; }
+    .lead { font-size: clamp(16px, 4.2vw, 20px); color: var(--sub); }
+
+    .eyebrow {
+      display: inline-block;
+      font-weight: 800;
+      font-size: 14px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--ink);
+      background: var(--jaune);
+      padding: 7px 15px;
+      border-radius: 999px;
     }
 
-    /* Wordmark texte (aucune image à charger) */
-    .brand {
+    /* ===== Boutons ===== */
+    .btn {
       display: inline-flex;
       align-items: center;
+      justify-content: center;
       gap: 8px;
-      align-self: center;
-      background: var(--jaune);
-      color: var(--anthra);
-      font-weight: 800;
-      font-size: 15px;
-      letter-spacing: .2px;
-      padding: 8px 16px;
-      border-radius: 999px;
-      margin-bottom: clamp(18px, 5vw, 30px);
-    }
-    .brand .heart { color: var(--rose-cta); }
-
-    h1 {
-      font-size: clamp(28px, 8vw, 40px);
-      line-height: 1.1;
-      font-weight: 800;
-      margin: 0 0 14px;
-      letter-spacing: -0.5px;
-    }
-    .subtitle {
-      font-size: clamp(15px, 4.2vw, 18px);
-      margin: 0 auto 26px;
-      max-width: 34ch;
-      opacity: .9;
-    }
-
-    /* ===== Blocs d'action ===== */
-    .action { margin-top: 4px; }
-
-    .btn {
-      display: block;
-      width: 100%;
       border: none;
       border-radius: var(--radius);
-      padding: 17px 20px;
+      padding: 17px 26px;
       font-size: 18px;
       font-weight: 800;
+      font-family: inherit;
       cursor: pointer;
       text-decoration: none;
       transition: transform .08s ease, filter .15s ease;
+      width: 100%;
     }
     .btn:active { transform: scale(.98); }
-
-    /* CTA principal : rose profond + texte blanc (contraste AA 5.18:1) */
-    .btn-primary {
-      background: var(--rose-cta);
-      color: #ffffff;
-    }
-    .btn-primary:hover { filter: brightness(1.05); }
+    .btn-primary { background: var(--rose-cta); color: #fff; box-shadow: var(--shadow); }
+    .btn-primary:hover { filter: brightness(1.06); }
     .btn:disabled { opacity: .6; cursor: default; }
 
-    .reassurance {
-      display: block;
-      font-size: 13px;
-      margin-top: 12px;
-      opacity: .75;
-    }
-
-    /* Séparateur "ou" pour la vue desktop (les deux options) */
+    /* ===== Module d'action (CTA OS-routé) ===== */
+    .action { width: 100%; max-width: 420px; }
+    .reassurance { display: flex; align-items: center; gap: 7px; justify-content: center;
+                   font-size: 13.5px; color: var(--sub); margin-top: 12px; }
     .sep {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      margin: 22px 0;
-      color: var(--anthra);
-      opacity: .55;
-      font-size: 13px;
-      font-weight: 600;
-      text-transform: uppercase;
-      letter-spacing: 1px;
+      align-items: center; gap: 12px; margin: 18px 0;
+      color: var(--sub); font-size: 12px; font-weight: 700;
+      text-transform: uppercase; letter-spacing: 1.5px;
     }
-    .sep::before, .sep::after {
-      content: "";
-      flex: 1;
-      height: 1px;
-      background: rgba(43,35,32,.2);
-    }
+    .sep::before, .sep::after { content: ""; flex: 1; height: 1px; background: rgba(52,33,44,.15); }
 
-    /* ===== Bloc iOS (waitlist e-mail) ===== */
-    .ios-card {
-      background: var(--jaune);
-      border-radius: var(--radius);
-      padding: 20px 18px;
-      text-align: left;
-    }
-    .ios-card h2 {
-      margin: 0 0 4px;
-      font-size: 18px;
-      font-weight: 800;
-    }
-    .ios-card p { margin: 0 0 14px; font-size: 14px; }
-
+    .ios-card { background: var(--jaune); border-radius: var(--radius); padding: 18px; text-align: left; }
+    .ios-card .t { font-weight: 800; font-size: 16px; }
+    .ios-card .d { font-size: 13.5px; margin: 2px 0 12px; }
     .email-row { display: flex; flex-direction: column; gap: 10px; }
     input[type="email"] {
-      width: 100%;
-      padding: 15px 16px;
-      font-size: 16px; /* >=16px : évite le zoom auto iOS */
-      border: 2px solid var(--anthra);
-      border-radius: 14px;
-      background: #fff;
-      color: var(--anthra);
+      width: 100%; padding: 15px 16px; font-size: 16px; /* >=16px : pas de zoom iOS */
+      border: 2px solid var(--ink); border-radius: 14px; background: #fff; color: var(--ink);
+      font-family: inherit;
     }
-    input[type="email"]:focus {
-      outline: none;
-      border-color: var(--rose-cta);
-      box-shadow: 0 0 0 3px rgba(198,49,108,.25);
-    }
-    .form-msg {
-      font-size: 14px;
-      font-weight: 700;
-      margin-top: 12px;
-      min-height: 1.2em;
-    }
-    .form-msg.ok  { color: #1c6b3a; }   /* vert foncé lisible sur jaune */
-    .form-msg.err { color: #9e1b1b; }   /* rouge foncé lisible sur jaune */
+    input[type="email"]:focus { outline: none; border-color: var(--rose-cta);
+      box-shadow: 0 0 0 3px rgba(200,30,106,.22); }
+    .form-msg { font-size: 13.5px; font-weight: 700; margin: 10px 2px 0; min-height: 1.1em; }
+    .form-msg.ok  { color: #1c6b3a; }
+    .form-msg.err { color: #9e1b1b; }
 
-    /* Utilitaire d'affichage piloté par le JS */
-    [hidden] { display: none !important; }
+    /* ===== HERO ===== */
+    .hero { padding-top: clamp(30px, 7vw, 56px); }
+    .hero-grid { display: grid; grid-template-columns: 1fr; gap: clamp(30px, 6vw, 56px); align-items: center; }
+    .hero-copy { text-align: center; }
+    .hero h1 { margin: 16px 0 14px; }
+    .hero h1 .accent { color: var(--rose); }
+    .hero .lead { max-width: 30ch; margin: 0 auto 26px; }
+    .hero .action { margin: 0 auto; }
+
+    /* ===== Maquette téléphone (jeu "Qui a dit ça ?") ===== */
+    .phone-wrap { display: flex; justify-content: center; }
+    .phone {
+      width: min(280px, 78vw);
+      background: #12090d;
+      border-radius: 40px;
+      padding: 12px;
+      box-shadow: 0 40px 80px -30px rgba(52,33,44,.6);
+      position: relative;
+    }
+    .phone::before { /* encoche */
+      content: ""; position: absolute; top: 16px; left: 50%; transform: translateX(-50%);
+      width: 90px; height: 20px; background: #12090d; border-radius: 0 0 14px 14px; z-index: 3;
+    }
+    .screen {
+      background: var(--creme); border-radius: 30px; overflow: hidden;
+      padding: 26px 16px 18px; min-height: 480px; display: flex; flex-direction: column;
+    }
+    .screen .overline { font-size: 11px; font-weight: 800; letter-spacing: 2px; color: var(--sub); text-align: center; }
+    .dots { display: flex; gap: 5px; justify-content: center; margin: 8px 0 18px; }
+    .dots i { width: 22px; height: 4px; border-radius: 999px; background: rgba(52,33,44,.14); display: block; }
+    .dots i.on { background: var(--rose); }
+    .q-card {
+      background: linear-gradient(135deg, #F24B95, var(--rose) 55%, var(--rose-cta));
+      border-radius: 20px; padding: 18px; color: #fff; margin-bottom: 16px;
+    }
+    .q-card .q-label { font-size: 12px; font-weight: 800; opacity: .9; letter-spacing: .5px; }
+    .bubble {
+      background: #fff; color: var(--ink); border-radius: 16px 16px 16px 4px;
+      padding: 12px 14px; margin-top: 12px; font-size: 15px; font-weight: 600; box-shadow: 0 6px 14px -8px rgba(0,0,0,.4);
+    }
+    .answers { display: grid; gap: 10px; margin-top: auto; }
+    .answer {
+      background: var(--surface); border: 2px solid rgba(52,33,44,.1); border-radius: 16px;
+      padding: 14px; font-weight: 800; font-size: 15px; text-align: center; color: var(--ink);
+    }
+    .answer.pick { border-color: var(--rose); background: #fff; color: var(--rose-cta); }
+
+    /* ===== Étapes "Comment ça marche" ===== */
+    .steps { display: grid; grid-template-columns: 1fr; gap: 18px; margin-top: 34px; }
+    .step { background: var(--surface); border-radius: var(--radius); padding: 24px; box-shadow: var(--shadow); }
+    .step .num {
+      width: 40px; height: 40px; border-radius: 12px; background: var(--jaune); color: var(--ink);
+      display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 18px; margin-bottom: 14px;
+    }
+    .step h3 { font-size: 20px; margin-bottom: 6px; }
+    .step p { color: var(--sub); font-size: 15px; margin: 0; }
+
+    /* ===== Grille de jeux ===== */
+    .center { text-align: center; }
+    .center .lead { max-width: 46ch; margin: 12px auto 0; }
+    .games { display: grid; grid-template-columns: 1fr; gap: 16px; margin-top: 36px; }
+    .game {
+      background: var(--surface); border-radius: var(--radius); padding: 22px;
+      border: 2px solid rgba(233,57,130,.14); text-align: left;
+    }
+    .game .ico { font-size: 26px; }
+    .game h3 { font-size: 19px; margin: 10px 0 6px; }
+    .game p { color: var(--sub); font-size: 14.5px; margin: 0; }
+
+    /* ===== Bloc compétition (fond rose) ===== */
+    .band { background: linear-gradient(160deg, var(--rose), var(--rose-cta)); color: #fff; border-radius: 28px; padding: clamp(28px, 6vw, 48px); }
+    .band h2 { color: #fff; }
+    .band .lead { color: rgba(255,255,255,.9); }
+    .rewards { display: grid; grid-template-columns: 1fr; gap: 14px; margin-top: 26px; }
+    .reward { background: rgba(255,255,255,.14); border-radius: 18px; padding: 18px; backdrop-filter: blur(2px); }
+    .reward .r-top { display: flex; justify-content: space-between; align-items: baseline; gap: 10px; }
+    .reward .r-name { font-weight: 800; font-size: 17px; }
+    .reward .r-pts { background: var(--jaune); color: var(--ink); font-weight: 800; font-size: 13px; padding: 4px 10px; border-radius: 999px; white-space: nowrap; }
+    .reward .r-desc { font-size: 14px; color: rgba(255,255,255,.9); margin-top: 6px; }
+
+    /* ===== Bloc "Notre histoire" (fond jaune, texte encre) ===== */
+    .story { background: var(--jaune); border-radius: 28px; padding: clamp(28px, 6vw, 48px); text-align: center; }
+    .story h2 { color: var(--ink); }
+    .story p { color: var(--ink); opacity: .82; max-width: 44ch; margin: 12px auto 0; font-size: 16px; }
+
+    /* ===== Confidentialité ===== */
+    .privacy { text-align: center; }
+    .privacy .lock { font-size: 38px; }
+    .privacy h2 { margin: 10px 0 12px; }
+    .privacy p { color: var(--sub); max-width: 48ch; margin: 0 auto; font-size: 16.5px; }
+
+    /* ===== CTA final ===== */
+    .final { text-align: center; }
+    .final .action { margin: 26px auto 0; }
 
     /* ===== Footer ===== */
-    footer {
-      flex-shrink: 0;
-      text-align: center;
-      padding: 18px 22px 26px;
-      font-size: 13px;
-      opacity: .8;
-    }
-    footer a { color: var(--anthra); }
+    footer { border-top: 1px solid rgba(52,33,44,.12); padding: 28px 0 90px; text-align: center; font-size: 13px; color: var(--sub); }
+    footer a { color: var(--ink); }
     .dot { margin: 0 8px; opacity: .5; }
+    .disclaimer { font-size: 11.5px; opacity: .8; max-width: 60ch; margin: 14px auto 0; }
+
+    /* ===== Barre CTA collante (mobile) ===== */
+    .sticky {
+      position: fixed; left: 0; right: 0; bottom: 0; z-index: 20;
+      padding: 12px 16px calc(12px + env(safe-area-inset-bottom));
+      background: rgba(255,246,236,.92); backdrop-filter: blur(10px);
+      border-top: 1px solid rgba(52,33,44,.1);
+    }
+    .sticky .btn { max-width: 460px; margin: 0 auto; }
+    [data-os="desktop"] .sticky { display: none; }
+
+    /* ===== Desktop : hero en 2 colonnes ===== */
+    @media (min-width: 860px) {
+      .hero-grid { grid-template-columns: 1.05fr .95fr; }
+      .hero-copy { text-align: left; }
+      .hero .lead { margin-left: 0; }
+      .hero .action { margin: 0; }
+      .steps { grid-template-columns: repeat(3, 1fr); }
+      .games { grid-template-columns: repeat(2, 1fr); }
+      .rewards { grid-template-columns: repeat(3, 1fr); }
+      .sticky { display: none; }
+      footer { padding-bottom: 40px; }
+    }
+
+    @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
   </style>
 </head>
 
 <body>
-  <main class="wrap">
-    <span class="brand"><span class="heart">♥</span> Juste Nous</span>
+  <!-- ================= HERO ================= -->
+  <header class="hero section container">
+    <div class="hero-grid">
+      <div class="hero-copy">
+        <span class="eyebrow">♥ Juste Nous</span>
+        <h1>Rejouez <span class="accent">votre histoire.</span></h1>
+        <p class="lead">
+          Le quiz de couple basé sur vos <strong>vraies conversations</strong>.
+          Importez vos messages WhatsApp, Instagram ou Snapchat — Juste Nous les
+          transforme en jeux à jouer à deux.
+        </p>
 
-    <h1>À quel point vous connaissez-vous&nbsp;vraiment&nbsp;?</h1>
-    <p class="subtitle">
-      Juste Nous transforme vos vrais messages en jeux de couple.
-      Devinez, défiez-vous, découvrez qui connaît vraiment l'autre.
-    </p>
+        <!-- Module d'action principal (routé selon l'OS) -->
+        <div class="action">
+          <div class="for-android">
+            <a class="btn btn-primary play-btn" href="https://play.google.com/store/apps?hl=fr" rel="noopener">
+              ▶ Télécharger sur Google Play
+            </a>
+          </div>
 
-    <div class="action">
-      <!-- ===== Bloc Android : bouton Google Play (affiché selon l'OS) ===== -->
-      <div id="android-block" hidden>
-        <!-- href réel + paramètres UTM injectés au chargement par le JS -->
-        <a id="play-btn" class="btn btn-primary" href="https://play.google.com/store/apps?hl=fr" rel="noopener">
-          Télécharger sur Google Play
-        </a>
-        <small class="reassurance">Vos conversations ne quittent jamais votre téléphone.</small>
+          <div class="sep only-desktop">ou</div>
+
+          <div class="for-ios">
+            <div class="ios-card">
+              <div class="t">Bientôt sur iPhone</div>
+              <div class="d">Laisse ton email, on te prévient au lancement.</div>
+              <form class="waitlist-form" action="https://formspree.io/f/xwvypqww" method="POST" novalidate>
+                <div class="email-row">
+                  <input type="email" name="email" inputmode="email" autocomplete="email"
+                         placeholder="ton@email.com" aria-label="Adresse email" required />
+                  <button type="submit" class="btn btn-primary">Me prévenir</button>
+                </div>
+                <input type="hidden" name="source" value="landing" />
+                <p class="form-msg" role="status" aria-live="polite"></p>
+              </form>
+            </div>
+          </div>
+
+          <p class="reassurance">🔒 Vos messages ne quittent jamais votre téléphone.</p>
+        </div>
       </div>
 
-      <!-- Séparateur affiché uniquement en vue desktop (les deux options) -->
-      <div id="separator" class="sep" hidden>ou</div>
-
-      <!-- ===== Bloc iOS : capture e-mail waitlist (affiché selon l'OS) ===== -->
-      <div id="ios-block" hidden>
-        <div class="ios-card">
-          <h2>Bientôt sur iPhone</h2>
-          <p>Laisse ton email, on te prévient au lancement.</p>
-
-          <!-- Endpoint Formspree — soumission AJAX (pas de rechargement de page). -->
-          <form id="waitlist-form" action="https://formspree.io/f/xwvypqww" method="POST" novalidate>
-            <div class="email-row">
-              <input
-                type="email"
-                name="email"
-                inputmode="email"
-                autocomplete="email"
-                placeholder="ton@email.com"
-                aria-label="Adresse email"
-                required
-              />
-              <button type="submit" class="btn btn-primary">Me prévenir</button>
+      <!-- Maquette téléphone : le jeu "Qui a dit ça ?" -->
+      <div class="phone-wrap" aria-hidden="true">
+        <div class="phone">
+          <div class="screen">
+            <div class="overline">AUJOURD'HUI</div>
+            <div class="dots"><i class="on"></i><i class="on"></i><i></i><i></i><i></i></div>
+            <div class="q-card">
+              <div class="q-label">QUI A DIT ÇA ?</div>
+              <div class="bubble">Arrête de me faire rire je dois dormir 😭</div>
             </div>
-            <!-- Champ caché : d'où vient l'inscription (rempli par le JS) -->
-            <input type="hidden" name="source" id="ios-source" value="landing" />
-            <p id="form-msg" class="form-msg" role="status" aria-live="polite"></p>
-          </form>
+            <div class="answers">
+              <div class="answer pick">Toi</div>
+              <div class="answer">Elle</div>
+            </div>
+          </div>
         </div>
-        <small class="reassurance">Vos conversations ne quittent jamais votre téléphone.</small>
       </div>
     </div>
-  </main>
+  </header>
 
+  <!-- ================= COMMENT ÇA MARCHE ================= -->
+  <section class="section container">
+    <div class="center">
+      <span class="eyebrow">3 étapes</span>
+      <h2 style="margin-top:14px">Prêt à jouer en 2 minutes</h2>
+    </div>
+    <div class="steps">
+      <div class="step">
+        <div class="num">1</div>
+        <h3>Importez votre conversation</h3>
+        <p>Depuis WhatsApp, Instagram ou Snapchat. Un simple fichier d'export, et c'est parti.</p>
+      </div>
+      <div class="step">
+        <div class="num">2</div>
+        <h3>L'app crée vos jeux</h3>
+        <p>Vos vrais messages sont analysés <strong>directement sur votre téléphone</strong>. Rien n'est envoyé.</p>
+      </div>
+      <div class="step">
+        <div class="num">3</div>
+        <h3>Jouez à deux</h3>
+        <p>Répondez chacun de votre côté, puis découvrez vos réponses en même temps.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= LES JEUX ================= -->
+  <section class="section container center">
+    <span class="eyebrow">Les jeux</span>
+    <h2 style="margin-top:14px">Qui connaît vraiment l'autre ?</h2>
+    <p class="lead">Quatre façons de vous défier avec vos propres messages.</p>
+    <div class="games">
+      <div class="game">
+        <div class="ico">💬</div>
+        <h3>Qui a dit ça ?</h3>
+        <p>Un vrai message s'affiche. À toi de deviner lequel de vous deux l'a écrit.</p>
+      </div>
+      <div class="game">
+        <div class="ico">🔁</div>
+        <h3>Qui le dit le plus souvent ?</h3>
+        <p>Un mot, une expression… lequel de vous deux l'utilise le plus dans vos échanges ?</p>
+      </div>
+      <div class="game">
+        <div class="ico">🎭</div>
+        <h3>Ce message est…</h3>
+        <p>Romantique, coquin, passif-agressif ? Étiquette l'ambiance — et vois si vous êtes d'accord.</p>
+      </div>
+      <div class="game">
+        <div class="ico">🎯</div>
+        <h3>Quel émoji ?</h3>
+        <p>L'émoji du message est masqué. Retrouve celui qui a vraiment été envoyé.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= COMPÉTITION / RÉCOMPENSES ================= -->
+  <section class="section container">
+    <div class="band">
+      <div class="center">
+        <span class="eyebrow">Le match</span>
+        <h2 style="margin-top:14px">Un point pour qui connaît le mieux l'autre</h2>
+        <p class="lead">Gardez le score jour après jour, grimpez au classement, cumulez votre série de jours ensemble. Puis transformez vos points en vraies récompenses.</p>
+      </div>
+      <div class="rewards">
+        <div class="reward">
+          <div class="r-top"><span class="r-name">Carte Massage</span><span class="r-pts">75 pts</span></div>
+          <div class="r-desc">« Je veux un massage ! »</div>
+        </div>
+        <div class="reward">
+          <div class="r-top"><span class="r-name">Carte Cinéma</span><span class="r-pts">100 pts</span></div>
+          <div class="r-desc">Choisis le prochain film à regarder ensemble.</div>
+        </div>
+        <div class="reward">
+          <div class="r-top"><span class="r-name">Carte Gage</span><span class="r-pts">125 pts</span></div>
+          <div class="r-desc">Ton gage est… à toi de fixer les règles.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= NOTRE HISTOIRE ================= -->
+  <section class="section container">
+    <div class="story">
+      <span class="eyebrow">Notre histoire</span>
+      <h2 style="margin-top:14px">Et quand vous voulez juste vous souvenir…</h2>
+      <p>
+        Redécouvrez toute votre conversation, remontez jusqu'à votre tout premier message,
+        et gardez vos moments préférés en favori. Votre histoire, rien qu'à vous.
+      </p>
+    </div>
+  </section>
+
+  <!-- ================= CONFIDENTIALITÉ ================= -->
+  <section class="section container privacy">
+    <div class="lock">🔒</div>
+    <h2>Vos messages restent chez vous</h2>
+    <p>
+      Juste Nous analyse vos conversations <strong>directement sur votre téléphone</strong>.
+      Le contenu de vos messages n'est jamais envoyé, ni stocké sur un serveur. Jamais.
+      Aucun cookie publicitaire, aucun traceur.
+    </p>
+  </section>
+
+  <!-- ================= CTA FINAL ================= -->
+  <section class="section container final">
+    <h2>Prêts à voir qui gagne&nbsp;?</h2>
+    <div class="action">
+      <div class="for-android">
+        <a class="btn btn-primary play-btn" href="https://play.google.com/store/apps?hl=fr" rel="noopener">
+          ▶ Télécharger sur Google Play
+        </a>
+      </div>
+
+      <div class="sep only-desktop">ou</div>
+
+      <div class="for-ios">
+        <div class="ios-card">
+          <div class="t">Bientôt sur iPhone</div>
+          <div class="d">Laisse ton email, on te prévient au lancement.</div>
+          <form class="waitlist-form" action="https://formspree.io/f/xwvypqww" method="POST" novalidate>
+            <div class="email-row">
+              <input type="email" name="email" inputmode="email" autocomplete="email"
+                     placeholder="ton@email.com" aria-label="Adresse email" required />
+              <button type="submit" class="btn btn-primary">Me prévenir</button>
+            </div>
+            <input type="hidden" name="source" value="landing-final" />
+            <p class="form-msg" role="status" aria-live="polite"></p>
+          </form>
+        </div>
+      </div>
+
+      <p class="reassurance">🔒 100 % privé · Traitement local · Aucun message stocké</p>
+    </div>
+  </section>
+
+  <!-- ================= FOOTER ================= -->
   <footer>
-    <a href="privacy.html">Politique de confidentialité</a>
-    <span class="dot">•</span>
-    © Juste Nous
+    <div class="container">
+      <a href="privacy.html">Politique de confidentialité</a>
+      <span class="dot">•</span>
+      © Juste Nous
+      <p class="disclaimer">
+        WhatsApp, Instagram et Snapchat sont des marques de leurs détenteurs respectifs.
+        Juste Nous n'est ni affiliée, ni sponsorisée, ni approuvée par ces sociétés.
+      </p>
+    </div>
   </footer>
+
+  <!-- ===== Barre CTA collante (mobile uniquement) ===== -->
+  <div class="sticky">
+    <a class="btn btn-primary play-btn for-android" href="https://play.google.com/store/apps?hl=fr" rel="noopener">
+      ▶ Télécharger sur Google Play
+    </a>
+    <button class="btn btn-primary for-ios" id="sticky-ios" type="button">
+      Me prévenir de la sortie iPhone
+    </button>
+  </div>
 
   <script>
     (function () {
       "use strict";
 
       /* ============================================================
-         1) ATTRIBUTION UTM → bouton Google Play
-         On lit les paramètres d'URL entrants et on les ré-injecte
-         sur le lien Play, à la fois :
-           - tels quels (utm_source, utm_medium, etc.)
-           - regroupés dans le paramètre "referrer" que Play Console
-             lit réellement pour attribuer l'installation.
+         1) ATTRIBUTION UTM → tous les boutons Google Play (.play-btn)
+         Les params entrants (utm_*, referrer) sont ré-injectés tels
+         quels ET regroupés dans "referrer" que Play Console lit pour
+         attribuer l'installation.
          ============================================================ */
       var incoming = new URLSearchParams(window.location.search);
-      var playBtn = document.getElementById("play-btn");
+      var keep = ["utm_source", "utm_medium", "utm_campaign", "utm_term", "utm_content", "referrer"];
 
-      if (playBtn) {
-        var base = playBtn.getAttribute("href").split("#")[0];
-        var baseParts = base.split("?");
-        var target = new URLSearchParams(baseParts[1] || ""); // params déjà présents dans l'URL Play
-
-        // Paramètres d'attribution à conserver
-        var keep = ["utm_source", "utm_medium", "utm_campaign", "utm_term", "utm_content", "referrer"];
+      document.querySelectorAll(".play-btn").forEach(function (btn) {
+        var base = btn.getAttribute("href").split("#")[0];
+        var parts = base.split("?");
+        var target = new URLSearchParams(parts[1] || "");
         var referrerBits = [];
-
         keep.forEach(function (key) {
           var val = incoming.get(key);
           if (val) {
-            // (a) on garde le paramètre tel quel sur l'URL
             target.set(key, val);
-            // (b) et on l'ajoute au futur "referrer" (sauf le referrer lui-même)
-            if (key !== "referrer") {
-              referrerBits.push(key + "=" + val);
-            }
+            if (key !== "referrer") referrerBits.push(key + "=" + val);
           }
         });
-
-        // Si aucun "referrer" fourni mais des UTM présents, on en construit un
         if (!incoming.get("referrer") && referrerBits.length) {
           target.set("referrer", referrerBits.join("&"));
         }
-
         var qs = target.toString();
-        playBtn.setAttribute("href", baseParts[0] + (qs ? "?" + qs : ""));
+        btn.setAttribute("href", parts[0] + (qs ? "?" + qs : ""));
+      });
+
+      /* ============================================================
+         2) Barre collante iOS → défile vers le 1er formulaire email
+         ============================================================ */
+      var stickyIos = document.getElementById("sticky-ios");
+      if (stickyIos) {
+        stickyIos.addEventListener("click", function () {
+          var input = document.querySelector(".waitlist-form input[type='email']");
+          if (input) {
+            input.scrollIntoView({ behavior: "smooth", block: "center" });
+            setTimeout(function () { input.focus(); }, 400);
+          }
+        });
       }
 
       /* ============================================================
-         2) DÉTECTION OS → quel bloc afficher
-         Android          → bouton Google Play
-         iPhone/iPad/iPod → formulaire email
-         Desktop/autre    → les deux (+ séparateur)
-         Pas de redirection automatique : l'utilisateur clique.
+         3) FORMULAIRES WAITLIST iOS (Formspree, AJAX sans rechargement)
+         Gère TOUS les formulaires .waitlist-form (hero + CTA final).
          ============================================================ */
-      var ua = navigator.userAgent || "";
-      var isAndroid = /android/i.test(ua);
-      // iPad récents se présentent comme "Macintosh" + écran tactile
-      var isIOS = /iphone|ipad|ipod/i.test(ua) ||
-                  (/Macintosh/.test(ua) && "ontouchend" in document);
+      var os = document.documentElement.getAttribute("data-os") || "desktop";
 
-      var androidBlock = document.getElementById("android-block");
-      var iosBlock = document.getElementById("ios-block");
-      var separator = document.getElementById("separator");
-      var iosSource = document.getElementById("ios-source");
-
-      if (isAndroid) {
-        androidBlock.hidden = false;
-        if (iosSource) iosSource.value = "android";
-      } else if (isIOS) {
-        iosBlock.hidden = false;
-        if (iosSource) iosSource.value = "ios";
-      } else {
-        // Desktop / autre : on montre les deux
-        androidBlock.hidden = false;
-        separator.hidden = false;
-        iosBlock.hidden = false;
-        if (iosSource) iosSource.value = "desktop";
-      }
-
-      /* ============================================================
-         3) FORMULAIRE WAITLIST iOS (AJAX, sans rechargement)
-         Compatible Formspree (JSON) et endpoints statiques.
-         ============================================================ */
-      var form = document.getElementById("waitlist-form");
-      var msg = document.getElementById("form-msg");
-
-      if (form) {
+      document.querySelectorAll(".waitlist-form").forEach(function (form) {
+        var msg = form.querySelector(".form-msg");
         form.addEventListener("submit", function (e) {
           e.preventDefault();
           msg.className = "form-msg";
@@ -351,10 +550,7 @@
 
           var emailInput = form.querySelector('input[type="email"]');
           var email = (emailInput.value || "").trim();
-
-          // Validation email côté client
-          var valid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
-          if (!valid) {
+          if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
             msg.className = "form-msg err";
             msg.textContent = "Oups, cet email n'a pas l'air valide.";
             emailInput.focus();
@@ -362,44 +558,36 @@
           }
 
           var btn = form.querySelector('button[type="submit"]');
-          var originalLabel = btn.textContent;
+          var label = btn.textContent;
           btn.disabled = true;
           btn.textContent = "Envoi…";
 
           var endpoint = form.getAttribute("action");
-          // Garde-fou : endpoint non configuré
-          if (endpoint.indexOf("{{") !== -1) {
-            btn.disabled = false;
-            btn.textContent = originalLabel;
+          if (endpoint.indexOf("{{") !== -1) { // garde-fou : endpoint non configuré
+            btn.disabled = false; btn.textContent = label;
             msg.className = "form-msg err";
             msg.textContent = "Formulaire non configuré (endpoint manquant).";
             return;
           }
 
-          fetch(endpoint, {
-            method: "POST",
-            body: new FormData(form),
-            headers: { "Accept": "application/json" }
-          })
+          var data = new FormData(form);
+          data.set("os", os); // trace l'OS d'origine dans Formspree
+
+          fetch(endpoint, { method: "POST", body: data, headers: { "Accept": "application/json" } })
             .then(function (res) {
               if (res.ok) {
                 form.reset();
                 msg.className = "form-msg ok";
                 msg.textContent = "C'est noté ! On te prévient dès la sortie iOS. ♥";
-              } else {
-                throw new Error("HTTP " + res.status);
-              }
+              } else { throw new Error("HTTP " + res.status); }
             })
             .catch(function () {
               msg.className = "form-msg err";
               msg.textContent = "Erreur d'envoi. Réessaie dans un instant.";
             })
-            .finally(function () {
-              btn.disabled = false;
-              btn.textContent = originalLabel;
-            });
+            .finally(function () { btn.disabled = false; btn.textContent = label; });
         });
-      }
+      });
     })();
   </script>
 </body>

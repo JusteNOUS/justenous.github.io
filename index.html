@@ -6,23 +6,17 @@
   <title>Juste Nous : Quiz Messages — À quel point vous connaissez-vous vraiment ?</title>
   <meta name="description" content="Juste Nous transforme vos vrais messages en jeux de couple. Devinez, défiez-vous, découvrez qui connaît vraiment l'autre. 100 % en local sur votre téléphone." />
 
-  <!-- ============================================================
-       PARTAGE SOCIAL (Open Graph) — remplacez {{DOMAINE}}
-       {{DOMAINE}} = votre domaine custom OU votre URL github.io
-       ============================================================ -->
+  <!-- PARTAGE SOCIAL (Open Graph) -->
   <meta property="og:type" content="website" />
   <meta property="og:title" content="Juste Nous : Quiz Messages" />
   <meta property="og:description" content="Vos vrais messages deviennent des jeux de couple. À quel point vous connaissez-vous vraiment ?" />
-  <meta property="og:url" content="https://{{DOMAINE}}/" />
-  <link rel="canonical" href="https://{{DOMAINE}}/" />
+  <meta property="og:url" content="https://justenous.github.io/" />
+  <link rel="canonical" href="https://justenous.github.io/" />
 
-  <!-- ============================================================
-       CLOUDFLARE WEB ANALYTICS (sans cookie)
-       Remplacez {{TOKEN_CLOUDFLARE}} par votre token de beacon.
-       C'est le seul script tiers de la page. Aucun cookie posé.
-       ============================================================ -->
+  <!-- Cloudflare Web Analytics (sans cookie) — seul script tiers, aucun cookie posé. -->
+
   <script defer src="https://static.cloudflareinsights.com/beacon.min.js"
-          data-cf-beacon='{"token": "{{TOKEN_CLOUDFLARE}}"}'></script>
+          data-cf-beacon='{"token": "4acbc3971ac8401a97aee69ae58585d1"}'></script>
 
   <style>
     /* ===== Identité visuelle Juste Nous =====
@@ -220,7 +214,7 @@
       <!-- ===== Bloc Android : bouton Google Play (affiché selon l'OS) ===== -->
       <div id="android-block" hidden>
         <!-- href réel + paramètres UTM injectés au chargement par le JS -->
-        <a id="play-btn" class="btn btn-primary" href="{{URL_GOOGLE_PLAY}}" rel="noopener">
+        <a id="play-btn" class="btn btn-primary" href="https://play.google.com/store/apps?hl=fr" rel="noopener">
           Télécharger sur Google Play
         </a>
         <small class="reassurance">Vos conversations ne quittent jamais votre téléphone.</small>
@@ -235,10 +229,8 @@
           <h2>Bientôt sur iPhone</h2>
           <p>Laisse ton email, on te prévient au lancement.</p>
 
-          <!-- ATTENTION : remplacez {{ENDPOINT_FORMULAIRE}} par votre endpoint
-               Formspree (ex. https://formspree.io/f/xxxxxxx) ou Tally.
-               La soumission se fait en AJAX (pas de rechargement de page). -->
-          <form id="waitlist-form" action="{{ENDPOINT_FORMULAIRE}}" method="POST" novalidate>
+          <!-- Endpoint Formspree — soumission AJAX (pas de rechargement de page). -->
+          <form id="waitlist-form" action="https://formspree.io/f/xwvypqww" method="POST" novalidate>
             <div class="email-row">
               <input
                 type="email"
@@ -264,8 +256,7 @@
   <footer>
     <a href="privacy.html">Politique de confidentialité</a>
     <span class="dot">•</span>
-    <!-- Remplacez {{NOM_EDITEUR}} par votre nom d'éditeur -->
-    © {{NOM_EDITEUR}}
+    © Juste Nous
   </footer>
 
   <script>
@@ -286,7 +277,7 @@
       if (playBtn) {
         var base = playBtn.getAttribute("href").split("#")[0];
         var baseParts = base.split("?");
-        var target = new URLSearchParams(baseParts[1] || ""); // params déjà dans {{URL_GOOGLE_PLAY}}
+        var target = new URLSearchParams(baseParts[1] || ""); // params déjà présents dans l'URL Play
 
         // Paramètres d'attribution à conserver
         var keep = ["utm_source", "utm_medium", "utm_campaign", "utm_term", "utm_content", "referrer"];

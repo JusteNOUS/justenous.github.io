@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-  <title>Juste Nous — Rejouez votre histoire. Le quiz de couple basé sur vos vrais messages.</title>
+  <title>Juste Nous, le quiz de couple basé sur vos vrais messages</title>
   <meta name="description" content="Importez vos conversations WhatsApp, Instagram ou Snapchat : Juste Nous les transforme en jeux de couple. Devinez qui a dit quoi, défiez-vous, redécouvrez votre histoire. 100 % privé, tout reste sur votre téléphone." />
 
   <!-- PARTAGE SOCIAL (Open Graph) -->
@@ -12,6 +12,8 @@
   <meta property="og:description" content="Vos vrais messages deviennent des jeux de couple. Rejouez votre histoire, découvrez qui connaît vraiment l'autre." />
   <meta property="og:url" content="https://justenous.github.io/" />
   <link rel="canonical" href="https://justenous.github.io/" />
+  <link rel="icon" type="image/png" href="logo.png" />
+  <link rel="apple-touch-icon" href="logo.png" />
 
   <!-- Détection OS AVANT le rendu (évite tout flash de mauvais CTA) -->
   <script>
@@ -73,7 +75,9 @@
     a { color: var(--rose-cta); }
     img, svg { max-width: 100%; }
 
-    .container { width: 100%; max-width: 1080px; margin: 0 auto; padding: 0 22px; }
+    .container { width: 100%; max-width: 1080px; margin: 0 auto;
+      padding-left: max(20px, env(safe-area-inset-left));
+      padding-right: max(20px, env(safe-area-inset-right)); }
     .section { padding: clamp(48px, 9vw, 88px) 0; }
 
     h1, h2, h3 { line-height: 1.08; letter-spacing: -0.5px; margin: 0; }
@@ -92,6 +96,7 @@
       padding: 7px 15px;
       border-radius: 999px;
     }
+    .logo { width: 74px; height: 74px; border-radius: 20px; box-shadow: var(--shadow); display: inline-block; }
 
     /* ===== Boutons ===== */
     .btn {
@@ -245,7 +250,8 @@
     /* ===== Barre CTA collante (mobile) ===== */
     .sticky {
       position: fixed; left: 0; right: 0; bottom: 0; z-index: 20;
-      padding: 12px 16px calc(12px + env(safe-area-inset-bottom));
+      padding: 12px max(16px, env(safe-area-inset-right))
+               calc(12px + env(safe-area-inset-bottom)) max(16px, env(safe-area-inset-left));
       background: rgba(255,246,236,.92); backdrop-filter: blur(10px);
       border-top: 1px solid rgba(52,33,44,.1);
     }
@@ -274,11 +280,11 @@
   <header class="hero section container">
     <div class="hero-grid">
       <div class="hero-copy">
-        <span class="eyebrow">♥ Juste Nous</span>
+        <img class="logo" src="logo.png" width="74" height="74" alt="Juste Nous" />
         <h1>Rejouez <span class="accent">votre histoire.</span></h1>
         <p class="lead">
           Le quiz de couple basé sur vos <strong>vraies conversations</strong>.
-          Importez vos messages WhatsApp, Instagram ou Snapchat — Juste Nous les
+          Importez vos messages WhatsApp, Instagram ou Snapchat. Juste Nous les
           transforme en jeux à jouer à deux.
         </p>
 
@@ -376,7 +382,7 @@
       <div class="game">
         <div class="ico">🎭</div>
         <h3>Ce message est…</h3>
-        <p>Romantique, coquin, passif-agressif ? Étiquette l'ambiance — et vois si vous êtes d'accord.</p>
+        <p>Romantique, coquin, passif-agressif ? Étiquette l'ambiance, et vois si vous êtes d'accord.</p>
       </div>
       <div class="game">
         <div class="ico">🎯</div>

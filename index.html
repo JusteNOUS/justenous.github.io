@@ -166,10 +166,6 @@
       padding-top: env(safe-area-inset-top);
       transition: box-shadow .2s ease;
     }
-    .topbar::after { /* fin liseré aux couleurs de la marque */
-      content: ""; position: absolute; left: 0; right: 0; bottom: -1px; height: 3px;
-      background: linear-gradient(90deg, var(--yellow), var(--rose) 55%, var(--rose-dark));
-    }
     .topbar.scrolled { box-shadow: 0 10px 28px -14px rgba(52,33,44,.55); }
     .topbar .container { display: flex; align-items: center; justify-content: space-between; gap: 12px; height: 70px; }
     .brand { display: flex; align-items: center; gap: 10px; text-decoration: none; color: var(--ink); font-family: var(--head); font-weight: 700; font-size: 21px; }

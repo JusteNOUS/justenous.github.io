@@ -133,14 +133,18 @@
         échéant, la campagne d'où vous venez (paramètres utm).
       </li>
       <li>
-        <strong>Mesure d'audience :</strong> statistiques de fréquentation anonymes et sans cookie
-        (Cloudflare Web Analytics) : pages vues, pays, type de navigateur. Aucune donnée ne permet
-        de vous identifier.
+        <strong>Mesure d'audience :</strong> statistiques de fréquentation sans cookie, via
+        Cloudflare Web Analytics et Mixpanel : visite de la page, ouverture et envoi du formulaire
+        de préinscription, clic vers Google Play, type d'appareil, pays approximatif (déduit de
+        l'adresse IP, qui n'est pas conservée), site d'où vous venez et campagne (paramètres utm).
+        Aucun cookie ni identifiant n'est enregistré sur votre appareil : chaque visite reçoit un
+        identifiant aléatoire qui n'est jamais réutilisé, et ces données ne permettent pas de vous
+        identifier.
       </li>
     </ul>
     <p>
       Sur un téléphone Android, le site vous redirige directement vers la fiche Google Play de
-      l'application ; aucune donnée n'est collectée lors de cette redirection.
+      l'application ; seule la visite est comptée, de la même manière.
     </p>
 
     <h2 id="finalites">5. Finalités et bases légales</h2>
@@ -168,7 +172,7 @@
     <h2 id="sous-traitants">7. Sous-traitants et transferts</h2>
     <ul>
       <li><strong>Google</strong> (Firebase Authentication, Cloud Firestore, Cloud Messaging, Crashlytics, Google Sign-In) : comptes, stockage, notifications, rapports de plantage. Google LLC, États-Unis.</li>
-      <li><strong>Mixpanel</strong> : statistiques d'usage de l'application, uniquement avec votre accord. Mixpanel, Inc., États-Unis ; données hébergées dans l'Union européenne.</li>
+      <li><strong>Mixpanel</strong> : statistiques d'usage de l'application (uniquement avec votre accord) et mesure d'audience anonyme du site. Mixpanel, Inc., États-Unis ; données hébergées dans l'Union européenne.</li>
       <li><strong>RevenueCat</strong> : gestion des abonnements. RevenueCat, Inc., États-Unis.</li>
       <li><strong>Google Play et Apple App Store</strong> : paiement des achats, selon leurs propres conditions.</li>
       <li><strong>Formspree</strong> : réception des emails de préinscription. Formspree, Inc., États-Unis.</li>
@@ -228,7 +232,8 @@
       Ni l'application ni le site n'utilisent de cookies ou de traceur publicitaire. Dans
       l'application, la mesure d'usage (Mixpanel) n'est activée qu'après votre accord, demandé au
       premier lancement, et peut être désactivée à tout moment dans Profil &gt; Confidentialité.
-      Sur le site, la mesure d'audience Cloudflare fonctionne sans cookie.
+      Sur le site, la mesure d'audience (Cloudflare et Mixpanel) fonctionne sans cookie ni
+      stockage sur votre appareil.
     </p>
 
     <h2 id="mineurs">12. Mineurs</h2>

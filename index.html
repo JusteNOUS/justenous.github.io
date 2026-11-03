@@ -23,13 +23,45 @@
       var PLAY = "https://play.google.com/store/apps/details?id=com.nosbulles.app&hl=fr";
       var ua = navigator.userAgent || "";
       var params = new URLSearchParams(location.search);
-      var bot = /bot|crawl|spider|slurp|facebookexternalhit|whatsapp|telegram|preview/i.test(ua);
+      var bot = /bot|crawl|spider|slurp|facebookexternalhit|whatsapp|telegram|preview|headless|lighthouse/i.test(ua);
       var os = "desktop";
       if (/android/i.test(ua)) os = "android";
       else if (/iphone|ipad|ipod/i.test(ua) || (/Macintosh/.test(ua) && "ontouchend" in document)) os = "ios";
       document.documentElement.setAttribute("data-os", os);
 
-      if (os === "android" && !bot && !params.has("web")) {
+      /* Mixpanel (projet Juste Nous, serveurs UE), sans SDK, sans cookie ni stockage :
+         un identifiant tiré au hasard à chaque visite relie les événements d'une même
+         visite, puis disparaît. sendBeacon garantit l'envoi même pendant la redirection. */
+      var MP_TOKEN = "14b6fb9ae467d438832d7fd2872020f7";
+      var visitId = "web-" + Date.now().toString(36) + "-" + Math.random().toString(36).slice(2, 10);
+      var ctx = {
+        plateforme: "site",
+        appareil: os,
+        source: params.get("utm_source") || "direct",
+        utm_medium: params.get("utm_medium") || undefined,
+        utm_campaign: params.get("utm_campaign") || undefined,
+        utm_content: params.get("utm_content") || undefined,
+        $referring_domain: document.referrer ? new URL(document.referrer).hostname : "direct"
+      };
+      window.jnTrack = function (name, props) {
+        if (bot) return;
+        var p = { token: MP_TOKEN, distinct_id: visitId, time: Date.now(),
+                  $insert_id: Math.random().toString(36).slice(2) + Date.now().toString(36) };
+        Object.keys(ctx).forEach(function (k) { if (ctx[k] !== undefined) p[k] = ctx[k]; });
+        Object.keys(props || {}).forEach(function (k) { p[k] = props[k]; });
+        var body = new URLSearchParams({ data: JSON.stringify([{ event: name, properties: p }]) });
+        var url = "https://api-eu.mixpanel.com/track?ip=1";
+        try {
+          if (!(navigator.sendBeacon && navigator.sendBeacon(url, body))) {
+            fetch(url, { method: "POST", body: body, keepalive: true, mode: "no-cors" });
+          }
+        } catch (e) {}
+      };
+
+      var toPlay = os === "android" && !bot && !params.has("web");
+      window.jnTrack("Landing vue", { redirige_play_store: toPlay });
+
+      if (toPlay) {
         // Attribution Play Console : les utm_* entrants sont regroupés dans "referrer".
         var bits = [];
         ["utm_source", "utm_medium", "utm_campaign", "utm_term", "utm_content"].forEach(function (k) {
@@ -750,9 +782,14 @@
       document.addEventListener("visibilitychange", function () { document.hidden ? stop() : play(); });
       play();
 
+      document.querySelectorAll('a[href*="play.google.com"]').forEach(function (a) {
+        a.addEventListener("click", function () { if (window.jnTrack) window.jnTrack("Clic Google Play", {}); });
+      });
+
       function open(source, trigger) {
         lastTrigger = trigger || null;
         form.elements.source.value = source;
+        if (window.jnTrack) window.jnTrack("Préinscription ouverte", { bouton: source });
         backdrop.classList.add("open");
         backdrop.setAttribute("aria-hidden", "false");
         document.body.style.overflow = "hidden";
@@ -793,6 +830,7 @@
         fetch(form.action, { method: "POST", body: data, headers: { "Accept": "application/json" } })
           .then(function (res) {
             if (!res.ok) throw new Error("HTTP " + res.status);
+            if (window.jnTrack) window.jnTrack("Préinscription envoyée", { bouton: form.elements.source.value });
             form.reset();
             sheet.classList.add("sent");
           })

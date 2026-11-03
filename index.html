@@ -88,7 +88,7 @@
       padding-left: max(16px, env(safe-area-inset-left));
       padding-right: max(16px, env(safe-area-inset-right));
     }
-    .section { padding: clamp(56px, 10vw, 96px) 0; }
+    .section { padding-top: clamp(56px, 10vw, 96px); padding-bottom: clamp(56px, 10vw, 96px); }
     h1, h2, h3 { font-family: var(--head); font-weight: 700; line-height: 1.08; letter-spacing: -.3px; margin: 0; }
     h1 { font-size: clamp(38px, 10vw, 64px); }
     h2 { font-size: clamp(28px, 6.5vw, 42px); }
@@ -149,24 +149,22 @@
     .reassure { font-size: 14px; color: var(--sub); display: flex; flex-wrap: wrap; justify-content: center; gap: 6px 14px; }
     .reassure span { display: inline-flex; align-items: center; gap: 6px; }
 
-    /* Visuel : illustration du couple + maquette du jeu */
-    .visual { position: relative; display: flex; justify-content: center; }
-    .duo { width: min(400px, 78vw); border-radius: 32px; margin-right: 22%; }
+    /* Visuel : maquette du jeu « Qui a dit ça ? » */
+    .visual { display: flex; justify-content: center; padding: 10px 0 20px; }
     .phone {
-      position: absolute; right: 0; bottom: -34px;
-      width: min(170px, 42vw); background: #12090d; border-radius: 30px; padding: 8px;
-      box-shadow: 0 30px 60px -24px rgba(52,33,44,.65);
-      transform: rotate(5deg);
+      width: min(270px, 72vw); background: #12090d; border-radius: 42px; padding: 11px;
+      box-shadow: 0 40px 70px -28px rgba(52,33,44,.6);
+      transform: rotate(3deg);
       animation: float 5s ease-in-out infinite;
     }
-    .screen { background: var(--cream); border-radius: 23px; padding: 16px 11px 12px; }
-    .screen .over { font-family: var(--head); font-size: 9px; font-weight: 600; letter-spacing: 1.5px; color: var(--sub); text-align: center; }
-    .q-card { background: linear-gradient(135deg, var(--rose-light), var(--rose) 55%, var(--rose-dark)); border-radius: 15px; padding: 11px; color: #fff; margin: 9px 0 10px; }
-    .q-card b { font-family: var(--head); font-size: 10px; letter-spacing: .5px; font-weight: 600; }
-    .bubble { background: #fff; color: var(--ink); border-radius: 12px 12px 12px 3px; padding: 8px 9px; margin-top: 8px; font-size: 11.5px; font-weight: 700; line-height: 1.35; }
-    .answer { background: var(--surface); border: 2px solid var(--line); border-radius: 12px; padding: 7px; font-family: var(--head); font-weight: 600; font-size: 12px; text-align: center; margin-top: 7px; }
+    .screen { background: var(--cream); border-radius: 32px; padding: 26px 16px 20px; }
+    .screen .over { font-family: var(--head); font-size: 12px; font-weight: 600; letter-spacing: 2px; color: var(--sub); text-align: center; }
+    .q-card { background: linear-gradient(135deg, var(--rose-light), var(--rose) 55%, var(--rose-dark)); border-radius: 20px; padding: 16px; color: #fff; margin: 14px 0 16px; }
+    .q-card b { font-family: var(--head); font-size: 13px; letter-spacing: .5px; font-weight: 600; }
+    .bubble { background: #fff; color: var(--ink); border-radius: 16px 16px 16px 4px; padding: 12px 13px; margin-top: 12px; font-size: 15.5px; font-weight: 700; line-height: 1.4; }
+    .answer { background: var(--surface); border: 2px solid var(--line); border-radius: 16px; padding: 12px; font-family: var(--head); font-weight: 600; font-size: 16px; text-align: center; margin-top: 10px; }
     .answer.pick { border-color: var(--rose); color: var(--rose-dark); background: #fff; }
-    @keyframes float { 0%,100% { transform: rotate(5deg) translateY(0); } 50% { transform: rotate(4deg) translateY(-8px); } }
+    @keyframes float { 0%,100% { transform: rotate(3deg) translateY(0); } 50% { transform: rotate(2deg) translateY(-8px); } }
 
     /* ===== Bandeau sources ===== */
     .sources { display: flex; justify-content: center; flex-wrap: wrap; gap: 10px; margin-top: clamp(48px, 9vw, 72px); }
@@ -322,7 +320,6 @@
         </div>
 
         <div class="visual" aria-hidden="true">
-          <img class="duo" src="duo.svg" width="420" height="350" alt="" />
           <div class="phone">
             <div class="screen">
               <div class="over">AUJOURD'HUI</div>

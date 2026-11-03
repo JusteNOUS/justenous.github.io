@@ -224,6 +224,43 @@
 
     /* Pastilles sous le téléphone : un jeu = une pastille */
     .visual { flex-direction: column; align-items: center; gap: 30px; }
+    .visual-title { font-family: var(--head); font-weight: 700; font-size: clamp(30px, 7vw, 38px); line-height: 1; margin: 0 0 -6px; display: flex; align-items: center; gap: 12px; }
+    .visual-title .n { background: var(--yellow); border-radius: 14px; padding: 2px 13px 4px; }
+
+    /* ===== Relire ses messages (écran « Notre histoire ») ===== */
+    .story-grid { display: grid; gap: 40px; align-items: center; }
+    .story-copy { text-align: center; }
+    .story-copy h2 { margin: 14px 0 12px; }
+    .story-copy p { color: var(--sub); max-width: 36ch; margin: 0 auto; font-size: clamp(17px, 4.4vw, 19px); }
+    .story-copy .feat { display: grid; gap: 10px; margin: 22px auto 0; max-width: 340px; text-align: left; }
+    .story-copy .feat div { display: flex; align-items: center; gap: 12px; background: var(--surface); border-radius: 16px; padding: 12px 14px; font-weight: 700; font-size: 15.5px; box-shadow: 0 10px 22px -18px rgba(52,33,44,.5); }
+    .story-copy .feat svg { flex: none; width: 20px; height: 20px; fill: var(--rose); }
+    .phone.static { animation: none; }
+    .st-head { display: flex; align-items: center; gap: 6px; padding: 6px 0 10px; }
+    .st-head .round { flex: none; width: 34px; height: 34px; border-radius: 50%; background: var(--surface); display: grid; place-items: center; box-shadow: 0 6px 14px -10px rgba(52,33,44,.5); }
+    .st-head .round svg { width: 14px; height: 14px; fill: var(--ink); }
+    .st-head .round.fav svg { fill: var(--rose); width: 16px; height: 16px; }
+    .st-head .title { flex: 1; text-align: center; font-family: var(--head); font-weight: 600; font-size: 16px; }
+    .st-head .count { display: flex; align-items: center; gap: 3px; background: rgba(233,57,130,.10); color: var(--rose); border-radius: 22px; padding: 4px 8px; font-family: var(--head); font-weight: 700; font-size: 11px; }
+    .st-head .count svg { width: 10px; height: 10px; fill: var(--rose); }
+    .st-list { flex: 1; display: flex; flex-direction: column; justify-content: flex-end; gap: 7px; position: relative; padding-bottom: 6px; }
+    .msg { max-width: 78%; padding: 8px 12px; font-size: 13px; line-height: 1.35; }
+    .msg .who { display: flex; align-items: center; gap: 4px; font-size: 9.5px; font-weight: 700; margin-bottom: 2px; }
+    .msg .who svg { width: 9px; height: 9px; }
+    .msg .ts { font-size: 8.5px; margin-top: 3px; }
+    .msg.them { align-self: flex-start; background: var(--surface); border: 1px solid rgba(52,33,44,.08); border-radius: 18px 18px 18px 6px; box-shadow: 0 8px 16px -12px rgba(52,33,44,.35); }
+    .msg.them .who { color: var(--rose); } .msg.them .who svg { fill: var(--rose); }
+    .msg.them .ts { color: rgba(110,90,99,.7); }
+    .msg.me { align-self: flex-end; background: var(--rose); color: #fff; border-radius: 18px 18px 6px 18px; box-shadow: 0 8px 16px -12px rgba(200,30,106,.6); }
+    .msg.me .who { color: rgba(255,255,255,.85); justify-content: flex-end; } .msg.me .who svg { fill: #fff; }
+    .msg.me .ts { color: rgba(255,255,255,.7); text-align: right; }
+    .bookmark-sep { display: flex; align-items: center; gap: 7px; margin: 4px 0; }
+    .bookmark-sep::before, .bookmark-sep::after { content: ""; flex: 1; height: 1px; background: rgba(233,57,130,.3); }
+    .bookmark-sep span { display: flex; align-items: center; gap: 4px; background: rgba(233,57,130,.08); border: 1px solid rgba(233,57,130,.25); color: var(--rose); border-radius: 22px; padding: 4px 9px; font-weight: 700; font-size: 10px; }
+    .bookmark-sep svg { width: 10px; height: 10px; fill: var(--rose); }
+    .fab { position: absolute; right: 0; bottom: -4px; width: 42px; height: 42px; border-radius: 50%; background: var(--rose); display: grid; place-items: center; box-shadow: 0 14px 22px -10px rgba(233,57,130,.75); }
+    .fab svg { width: 17px; height: 17px; fill: #fff; }
+    .st-list .msg:last-of-type { margin-bottom: 44px; }
     .game-tabs { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; max-width: 360px; }
     .game-tabs button {
       border: 0; cursor: pointer; font-family: var(--head); font-weight: 600; font-size: 14px;
@@ -351,6 +388,10 @@
       .steps { grid-template-columns: repeat(3, 1fr); }
       .games { grid-template-columns: repeat(2, 1fr); }
       .rewards { grid-template-columns: repeat(3, 1fr); }
+      .story-grid { grid-template-columns: .95fr 1.05fr; }
+      .story-grid .visual { order: -1; }
+      .story-copy { text-align: left; }
+      .story-copy p, .story-copy .feat { margin-left: 0; }
       .promo { grid-template-columns: 1fr auto; text-align: left; }
       .promo p { margin-left: 0; }
       .promo .btn { width: auto; }
@@ -403,6 +444,7 @@
         </div>
 
         <div class="visual">
+          <p class="visual-title"><span class="n">4</span> jeux</p>
           <div class="phone" aria-hidden="true">
             <div class="screen">
               <div class="island"></div>
@@ -453,6 +495,53 @@
             <button type="button" role="tab" aria-selected="false">Qui dit le plus</button>
             <button type="button" role="tab" aria-selected="false">Ce message est…</button>
             <button type="button" role="tab" aria-selected="false">Quel émoji&nbsp;?</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== Relire ses messages : marque-page ===== -->
+    <section class="section container">
+      <div class="story-grid">
+        <div class="story-copy">
+          <span class="eyebrow">Notre histoire</span>
+          <h2>Vous souhaitez juste relire vos messages&nbsp;?</h2>
+          <p>Et les garder en mémoire&nbsp;? C'est aussi possible, avec l'option <strong>marque-page</strong>.</p>
+          <div class="feat">
+            <div><svg viewBox="0 0 24 24"><path d="M17 3H7c-1.1 0-2 .9-2 2v16l7-3 7 3V5c0-1.1-.9-2-2-2z"/></svg>Reprenez là où vous vous êtes arrêtés</div>
+            <div><svg viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>Gardez vos messages préférés en favori</div>
+            <div><svg viewBox="0 0 24 24"><path d="M13 3a9 9 0 0 0-9 9H1l3.9 3.9.1.1L9 12H6a7 7 0 1 1 2.05 4.95l-1.42 1.42A9 9 0 1 0 13 3zm-1 5v5l4.25 2.52.77-1.28-3.52-2.09V8z"/></svg>Remontez jusqu'à votre tout premier message</div>
+          </div>
+        </div>
+
+        <div class="visual">
+          <div class="phone static" aria-hidden="true">
+            <div class="screen">
+              <div class="island"></div>
+              <div class="status">
+                <span>9:41</span>
+                <span class="icons">
+                  <svg viewBox="0 0 18 12"><rect x="0" y="8" width="3" height="4" rx="1"/><rect x="5" y="5.5" width="3" height="6.5" rx="1"/><rect x="10" y="3" width="3" height="9" rx="1"/><rect x="15" y="0" width="3" height="12" rx="1"/></svg>
+                  <svg viewBox="0 0 16 12"><path d="M8 2.3c2.3 0 4.4.9 6 2.4l1.3-1.4A10.3 10.3 0 0 0 8 .3 10.3 10.3 0 0 0 .7 3.3L2 4.7a8.3 8.3 0 0 1 6-2.4zm0 3.9c1.3 0 2.5.5 3.4 1.3l1.4-1.4A6.9 6.9 0 0 0 8 4.2c-1.8 0-3.5.7-4.8 1.9l1.4 1.4A4.9 4.9 0 0 1 8 6.2zm0 3.8L10 8a2.9 2.9 0 0 0-4 0z"/></svg>
+                  <svg viewBox="0 0 27 12"><rect x=".5" y=".5" width="22" height="11" rx="3.2" fill="none" stroke="currentColor" stroke-opacity=".4"/><rect x="2" y="2" width="17" height="8" rx="2"/><rect x="24" y="4" width="2" height="4" rx="1" opacity=".45"/></svg>
+                </span>
+              </div>
+              <div class="st-head">
+                <span class="round"><svg viewBox="0 0 24 24"><path d="M16.6 2.6 15.2 1.2 4.4 12l10.8 10.8 1.4-1.4L7.2 12z"/></svg></span>
+                <span class="title">Notre histoire</span>
+                <span class="count"><svg viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>12</span>
+                <span class="round fav"><svg viewBox="0 0 24 24"><path d="M16.5 3c-1.74 0-3.41.81-4.5 2.09C10.91 3.81 9.24 3 7.5 3 4.42 3 2 5.42 2 8.5c0 3.78 3.4 6.86 8.55 11.54L12 21.35l1.45-1.32C18.6 15.36 22 12.28 22 8.5 22 5.42 19.58 3 16.5 3zm-4.4 15.55-.1.1-.1-.1C7.14 14.24 4 11.39 4 8.5 4 6.5 5.5 5 7.5 5c1.54 0 3.04.99 3.57 2.36h1.87C13.46 5.99 14.96 5 16.5 5c2 0 3.5 1.5 3.5 3.5 0 2.89-3.14 5.74-7.9 10.05z"/></svg></span>
+              </div>
+              <div class="st-list">
+                <div class="msg them"><div class="who">Léa</div>Tu te souviens de notre premier rendez-vous&nbsp;? 🥹<div class="ts">Il y a 2 ans</div></div>
+                <div class="msg me"><div class="who">Hugo</div>Comment oublier, tu as renversé ton café sur moi 😂<div class="ts">Il y a 2 ans</div></div>
+                <div class="msg them"><div class="who">Léa <svg viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg></div>Et tu m'as dit que c'était quand même le meilleur jour de ta vie<div class="ts">Il y a 2 ans</div></div>
+                <div class="bookmark-sep"><span><svg viewBox="0 0 24 24"><path d="M17 3H7c-1.1 0-2 .9-2 2v16l7-3 7 3V5c0-1.1-.9-2-2-2z"/></svg>Dernière lecture</span></div>
+                <div class="msg me"><div class="who">Hugo</div>C'était vrai. Ça l'est toujours ❤️<div class="ts">Il y a 2 ans</div></div>
+                <span class="fab"><svg viewBox="0 0 24 24"><path d="M17 3H7c-1.1 0-2 .9-2 2v16l7-3 7 3V5c0-1.1-.9-2-2-2z"/></svg></span>
+              </div>
+              <div class="home-bar"></div>
+            </div>
           </div>
         </div>
       </div>

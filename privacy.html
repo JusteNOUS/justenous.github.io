@@ -3,66 +3,56 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-  <title>Politique de confidentialité — Juste Nous : Quiz Messages</title>
-  <meta name="description" content="Politique de confidentialité de l'application Juste Nous. Vos conversations restent sur votre téléphone." />
+  <title>Politique de confidentialité — Juste Nous</title>
+  <meta name="description" content="Politique de confidentialité de l'application Juste Nous et de son site. Le texte de vos conversations reste sur votre téléphone." />
   <meta name="robots" content="index,follow" />
+  <meta name="theme-color" content="#FFF6EC" />
+  <link rel="canonical" href="https://justenous.github.io/privacy.html" />
+  <link rel="icon" type="image/png" href="logo.png" />
 
-  <!-- Cloudflare Web Analytics (sans cookie) — même token que la landing -->
+  <!-- Cloudflare Web Analytics (sans cookie) -->
   <script defer src="https://static.cloudflareinsights.com/beacon.min.js"
           data-cf-beacon='{"token": "4acbc3971ac8401a97aee69ae58585d1"}'></script>
 
   <style>
+    @font-face { font-family: "Fredoka"; font-weight: 600; font-display: swap; src: url("fonts/Fredoka-SemiBold.ttf") format("truetype"); }
+    @font-face { font-family: "Nunito"; font-weight: 400; font-display: swap; src: url("fonts/Nunito-Regular.ttf") format("truetype"); }
+    @font-face { font-family: "Nunito"; font-weight: 700; font-display: swap; src: url("fonts/Nunito-Bold.ttf") format("truetype"); }
     :root {
-      --jaune:  #FFDE59;
-      --rose-cta:#C6316C;
-      --creme:  #FFF6EC;
-      --anthra: #2B2320;
+      --cream: #FFF6EC;
+      --surface: #FFFDF9;
+      --yellow: #FFDE59;
+      --rose-dark: #C81E6A;
+      --ink: #34212C;
+      --sub: #6E5A63;
     }
     * { box-sizing: border-box; }
     html, body { margin: 0; padding: 0; }
     body {
-      background: var(--creme);
-      color: var(--anthra);
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-      line-height: 1.6;
-      -webkit-font-smoothing: antialiased;
+      background: var(--cream); color: var(--ink);
+      font-family: "Nunito", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+      line-height: 1.6; -webkit-font-smoothing: antialiased;
     }
-    .wrap { max-width: 680px; margin: 0 auto; padding: 28px 22px 60px; }
-
+    .wrap {
+      max-width: 700px; margin: 0 auto;
+      padding: calc(24px + env(safe-area-inset-top)) max(16px, env(safe-area-inset-right)) 64px max(16px, env(safe-area-inset-left));
+    }
     .back {
-      display: inline-block;
-      background: var(--jaune);
-      color: var(--anthra);
-      text-decoration: none;
-      font-weight: 700;
-      font-size: 14px;
-      padding: 8px 16px;
-      border-radius: 999px;
-      margin-bottom: 26px;
+      display: inline-block; background: var(--yellow); color: var(--ink); text-decoration: none;
+      font-weight: 700; font-size: 15px; padding: 9px 16px; border-radius: 999px; margin-bottom: 26px;
     }
-    h1 { font-size: clamp(26px, 6vw, 34px); line-height: 1.15; margin: 0 0 6px; }
-    .updated { font-size: 13px; opacity: .7; margin: 0 0 28px; }
-    h2 { font-size: 19px; margin: 30px 0 8px; }
-    p, li { font-size: 16px; }
+    h1, h2 { font-family: "Fredoka", ui-rounded, system-ui, sans-serif; font-weight: 600; }
+    h1 { font-size: clamp(28px, 7vw, 38px); line-height: 1.12; margin: 0 0 6px; }
+    .updated { font-size: 14px; color: var(--sub); margin: 0 0 26px; }
+    h2 { font-size: 21px; line-height: 1.25; margin: 34px 0 8px; }
+    p, li { font-size: 16.5px; }
     ul { padding-left: 20px; }
-    a { color: var(--rose-cta); }
-
-    .highlight {
-      background: var(--jaune);
-      border-radius: 16px;
-      padding: 16px 18px;
-      font-weight: 600;
-      margin: 22px 0;
-    }
-    .todo {
-      background: #fff;
-      border: 2px dashed var(--rose-cta);
-      border-radius: 12px;
-      padding: 4px 8px;
-      font-weight: 700;
-      color: var(--rose-cta);
-    }
-    footer { margin-top: 44px; font-size: 13px; opacity: .8; }
+    li { margin-bottom: 6px; }
+    a { color: var(--rose-dark); }
+    .highlight { background: var(--yellow); border-radius: 18px; padding: 16px 18px; font-weight: 700; margin: 22px 0; }
+    .toc { background: var(--surface); border-radius: 18px; padding: 16px 18px 16px 38px; margin: 0 0 10px; }
+    .toc li { font-size: 15.5px; margin-bottom: 2px; }
+    footer { margin-top: 44px; font-size: 14px; color: var(--sub); }
   </style>
 </head>
 
@@ -71,81 +61,187 @@
     <a class="back" href="index.html">← Retour</a>
 
     <h1>Politique de confidentialité</h1>
-    <p class="updated">Dernière mise à jour : 7 juillet 2026</p>
+    <p class="updated">Dernière mise à jour : 3 novembre 2026</p>
 
     <div class="highlight">
-      Vos conversations (WhatsApp, Instagram, Snapchat ou autres) sont traitées
-      <strong>exclusivement en local</strong> sur votre téléphone. Elles ne sont
-      jamais envoyées, stockées ni collectées sur un serveur.
+      Le texte de vos conversations (WhatsApp, Instagram, Snapchat…) est lu et analysé
+      uniquement sur votre téléphone. Il n'est jamais envoyé sur nos serveurs, ni à nos prestataires.
     </div>
 
-    <h2>1. Qui est responsable du traitement</h2>
     <p>
-      L'application « Juste Nous : Quiz Messages » est éditée par
-      <strong>Guillaume Leprince</strong>, entrepreneur individuel (micro-entreprise),
-      SIRET 989&nbsp;912&nbsp;720&nbsp;00012,
-      13 rue Delagarde, 93370 Montfermeil, France.
+      Cette politique concerne l'application « Juste Nous » (Android et iPhone) et le site
+      justenous.github.io.
     </p>
 
-    <h2>2. Quelles données nous traitons</h2>
+    <ol class="toc">
+      <li><a href="#responsable">Responsable du traitement</a></li>
+      <li><a href="#conversation">Votre conversation importée</a></li>
+      <li><a href="#donnees">Données collectées par l'application</a></li>
+      <li><a href="#site">Données collectées par le site</a></li>
+      <li><a href="#finalites">Finalités et bases légales</a></li>
+      <li><a href="#partenaire">Données de votre partenaire</a></li>
+      <li><a href="#sous-traitants">Sous-traitants et transferts</a></li>
+      <li><a href="#conservation">Durée de conservation</a></li>
+      <li><a href="#suppression">Suppression de votre compte</a></li>
+      <li><a href="#droits">Vos droits</a></li>
+      <li><a href="#traceurs">Cookies et traceurs</a></li>
+      <li><a href="#mineurs">Mineurs</a></li>
+      <li><a href="#modifications">Modifications</a></li>
+    </ol>
+
+    <h2 id="responsable">1. Responsable du traitement</h2>
+    <p>
+      Guillaume Leprince, entrepreneur individuel (micro-entreprise),
+      SIRET 989&nbsp;912&nbsp;720&nbsp;00012, 13 rue Delagarde, 93370 Montfermeil, France.<br />
+      Contact : <a href="mailto:guillaumeleprince75@gmail.com">guillaumeleprince75@gmail.com</a>
+    </p>
+
+    <h2 id="conversation">2. Votre conversation importée</h2>
+    <p>
+      Le texte de votre conversation importée n'est jamais envoyé sur nos serveurs ni à nos
+      prestataires : il est lu, analysé et stocké uniquement sur votre appareil.
+    </p>
+    <p>
+      Pour faire fonctionner le quiz entre les deux téléphones du couple, seuls quelques éléments
+      dérivés sont enregistrés en ligne : la position d'un message dans la conversation, un mot
+      recherché, les émojis d'un message et le prénom de son auteur. Jamais le texte des messages.
+    </p>
+    <p>
+      Si la sauvegarde automatique de votre téléphone est activée (Google sur Android, iCloud sur
+      iPhone), les données de l'application, dont la conversation importée, peuvent être incluses
+      dans cette sauvegarde chiffrée, gérée par Google ou Apple et non par nous.
+    </p>
+
+    <h2 id="donnees">3. Données collectées par l'application</h2>
+    <ul>
+      <li><strong>Compte :</strong> identifiant utilisateur, adresse email et nom associés au compte utilisé pour vous connecter (Google Sign-In).</li>
+      <li><strong>Profil :</strong> prénom affiché, code de couple.</li>
+      <li><strong>Jeu :</strong> vos réponses aux questions du jour, scores, points, série de jours, récompenses de la boutique, date de dernière partie.</li>
+      <li><strong>Notifications :</strong> identifiant de notification de votre appareil.</li>
+      <li><strong>Abonnement :</strong> statut et historique d'achat (offre, date, renouvellement), transmis par Google Play ou l'App Store via RevenueCat. Nous n'avons jamais accès à vos coordonnées bancaires.</li>
+      <li><strong>Essai gratuit :</strong> identifiant de votre compte, date de début de l'essai et code du couple concerné.</li>
+      <li><strong>Statistiques d'usage (uniquement avec votre accord) :</strong> écrans consultés, fonctionnalités utilisées, identifiant d'appareil, modèle et système d'exploitation, pays approximatif.</li>
+      <li><strong>Diagnostic :</strong> rapports de plantage et informations techniques sur l'appareil.</li>
+    </ul>
+
+    <h2 id="site">4. Données collectées par le site</h2>
     <ul>
       <li>
-        <strong>Contenu de vos conversations :</strong> analysé
-        <strong>uniquement sur votre appareil</strong> pour générer les mini-jeux.
-        Ces données ne quittent jamais votre téléphone et ne nous sont jamais transmises.
+        <strong>Préinscription iPhone :</strong> votre adresse email, si et seulement si vous la
+        saisissez dans le formulaire pour être prévenu(e) de la sortie sur iPhone. Nous enregistrons
+        aussi le bouton utilisé, le type d'appareil (iPhone, Android ou ordinateur) et, le cas
+        échéant, la campagne d'où vous venez (paramètres utm).
       </li>
       <li>
-        <strong>Adresse email (liste d'attente iOS uniquement) :</strong> si, et seulement si,
-        vous la saisissez volontairement sur notre page web pour être prévenu(e)
-        de la sortie de la version iPhone.
+        <strong>Mesure d'audience :</strong> statistiques de fréquentation anonymes et sans cookie
+        (Cloudflare Web Analytics) : pages vues, pays, type de navigateur. Aucune donnée ne permet
+        de vous identifier.
       </li>
     </ul>
     <p>
-      Nous n'utilisons aucun cookie publicitaire et aucun traceur tiers de publicité.
-      Nos statistiques de fréquentation web sont anonymes et sans cookie
-      (Cloudflare Web Analytics).
+      Sur un téléphone Android, le site vous redirige directement vers la fiche Google Play de
+      l'application ; aucune donnée n'est collectée lors de cette redirection.
     </p>
 
-    <h2>3. Finalité et base légale</h2>
+    <h2 id="finalites">5. Finalités et bases légales</h2>
     <ul>
-      <li>
-        <strong>Email de liste d'attente :</strong> vous informer du lancement de la
-        version iOS. Base légale : votre <strong>consentement</strong>, donné en soumettant
-        le formulaire.
-      </li>
-      <li>
-        <strong>Fonctionnement du jeu :</strong> le traitement des messages a lieu localement,
-        sans transfert de données personnelles vers nos serveurs.
-      </li>
+      <li>Fournir le service (compte, couple, quiz, scores, historique) : exécution du contrat (CGU).</li>
+      <li>Gérer les abonnements et l'essai gratuit : exécution du contrat.</li>
+      <li>Empêcher qu'un même compte bénéficie plusieurs fois de l'essai gratuit : intérêt légitime (prévention des abus).</li>
+      <li>Envoyer des notifications (partenaire, rappel de série) : votre consentement, via l'autorisation du téléphone, réglable dans Profil.</li>
+      <li>Mesurer l'usage de l'application pour l'améliorer : votre consentement, retirable à tout moment dans Profil &gt; Confidentialité.</li>
+      <li>Détecter et corriger les plantages : intérêt légitime à assurer la stabilité du service.</li>
+      <li>Vous prévenir de la sortie sur iPhone : votre consentement, donné en envoyant le formulaire de préinscription.</li>
+      <li>Mesurer l'audience du site : intérêt légitime, sans cookie ni donnée identifiante.</li>
     </ul>
-
-    <h2>4. Durée de conservation</h2>
     <p>
-      Votre email est conservé jusqu'au lancement de la version iOS puis supprimé,
-      ou plus tôt sur simple demande de votre part.
+      Aucune donnée n'est vendue, ni utilisée à des fins publicitaires, ni partagée avec des annonceurs.
     </p>
 
-    <h2>5. Destinataires — pas de revente</h2>
+    <h2 id="partenaire">6. Données de votre partenaire</h2>
     <p>
-      Nous ne vendons, ne louons et n'échangeons <strong>jamais</strong> vos données.
-      L'email de liste d'attente est traité via notre prestataire de formulaire
-      <strong>Formspree</strong> (Formspree, Inc., États-Unis), agissant comme
-      sous-traitant pour notre compte. Le transfert hors UE est encadré par les
-      clauses contractuelles types (SCC).
+      Importer une conversation implique de traiter des messages de votre partenaire. En l'important,
+      vous déclarez être partie à cette conversation et l'utiliser à des fins strictement personnelles
+      au sein du couple. Votre partenaire voit vos réponses et vos scores du jour, et inversement.
     </p>
 
-    <h2>6. Vos droits (RGPD)</h2>
+    <h2 id="sous-traitants">7. Sous-traitants et transferts</h2>
+    <ul>
+      <li><strong>Google</strong> (Firebase Authentication, Cloud Firestore, Cloud Messaging, Crashlytics, Google Sign-In) : comptes, stockage, notifications, rapports de plantage. Google LLC, États-Unis.</li>
+      <li><strong>Mixpanel</strong> : statistiques d'usage de l'application, uniquement avec votre accord. Mixpanel, Inc., États-Unis ; données hébergées dans l'Union européenne.</li>
+      <li><strong>RevenueCat</strong> : gestion des abonnements. RevenueCat, Inc., États-Unis.</li>
+      <li><strong>Google Play et Apple App Store</strong> : paiement des achats, selon leurs propres conditions.</li>
+      <li><strong>Formspree</strong> : réception des emails de préinscription. Formspree, Inc., États-Unis.</li>
+      <li><strong>Cloudflare</strong> : mesure d'audience anonyme du site. Cloudflare, Inc., États-Unis.</li>
+      <li><strong>GitHub</strong> : hébergement du site. GitHub, Inc., États-Unis.</li>
+    </ul>
     <p>
-      Vous disposez d'un droit d'accès, de rectification, d'effacement, d'opposition
-      et de portabilité de vos données. Pour l'exercer, contactez-nous à
-      guillaumeleprince75@gmail.com.
-      Vous pouvez également introduire une réclamation auprès de la CNIL (www.cnil.fr).
+      Lorsque des données sont transférées hors de l'Union européenne, ces transferts sont encadrés
+      par les clauses contractuelles types de la Commission européenne ou le Data Privacy Framework
+      UE–États-Unis.
     </p>
 
-    <h2>7. Contact</h2>
+    <h2 id="conservation">8. Durée de conservation</h2>
+    <ul>
+      <li>Compte, profil et données de jeu : tant que votre compte existe. Ils sont supprimés dès la suppression du compte.</li>
+      <li>Statistiques d'usage de l'application : 25 mois maximum.</li>
+      <li>Rapports de plantage : 90 jours.</li>
+      <li>Données d'achat : durée imposée par nos obligations comptables et légales.</li>
+      <li>Trace de l'essai gratuit (identifiant du compte, date, code du couple) : conservée pendant toute la durée d'exploitation de l'application, y compris après la suppression du compte, uniquement pour empêcher un nouvel essai. Elle ne contient ni nom, ni email, ni donnée de jeu.</li>
+      <li>Email de préinscription : jusqu'à l'envoi de l'email annonçant la sortie sur iPhone, puis supprimé. Ou plus tôt, sur simple demande.</li>
+    </ul>
     <p>
-      Pour toute question relative à cette politique :
-      guillaumeleprince75@gmail.com.
+      Quitter le couple ne supprime pas vos données en ligne : pour les effacer, supprimez votre compte.
+    </p>
+
+    <h2 id="suppression">9. Suppression de votre compte</h2>
+    <p>
+      Vous pouvez supprimer définitivement votre compte depuis l'application : Profil &gt;
+      « Supprimer mon compte ». Cela supprime votre compte, votre profil, vos scores et la
+      conversation stockée sur votre appareil. Lorsque plus aucun membre ne reste dans le couple,
+      les données communes du couple sont aussi supprimées. Seule la trace de l'essai gratuit est
+      conservée (voir « Durée de conservation »).
+    </p>
+    <p>
+      Vous pouvez aussi demander la suppression par email à
+      <a href="mailto:guillaumeleprince75@gmail.com">guillaumeleprince75@gmail.com</a>,
+      y compris si vous n'avez plus accès à l'application.
+    </p>
+    <p>
+      Supprimer votre compte ne résilie pas un abonnement en cours : résiliez-le depuis Google Play
+      ou l'App Store.
+    </p>
+
+    <h2 id="droits">10. Vos droits</h2>
+    <p>
+      Conformément au Règlement (UE) 2016/679 (RGPD), vous disposez des droits d'accès, de
+      rectification, d'effacement, de portabilité, de limitation et d'opposition, ainsi que du droit
+      de retirer votre consentement à tout moment.
+    </p>
+    <p>
+      Pour les exercer : <a href="mailto:guillaumeleprince75@gmail.com">guillaumeleprince75@gmail.com</a>.
+      Vous pouvez également adresser une réclamation à la CNIL (<a href="https://www.cnil.fr" rel="noopener">www.cnil.fr</a>).
+    </p>
+
+    <h2 id="traceurs">11. Cookies et traceurs</h2>
+    <p>
+      Ni l'application ni le site n'utilisent de cookies ou de traceur publicitaire. Dans
+      l'application, la mesure d'usage (Mixpanel) n'est activée qu'après votre accord, demandé au
+      premier lancement, et peut être désactivée à tout moment dans Profil &gt; Confidentialité.
+      Sur le site, la mesure d'audience Cloudflare fonctionne sans cookie.
+    </p>
+
+    <h2 id="mineurs">12. Mineurs</h2>
+    <p>
+      L'application est réservée aux personnes de 18 ans et plus. Nous ne collectons pas sciemment
+      de données concernant des mineurs.
+    </p>
+
+    <h2 id="modifications">13. Modifications</h2>
+    <p>
+      Nous pouvons mettre à jour cette politique, par exemple lors de l'ajout d'une fonctionnalité.
+      La date de dernière mise à jour figure en haut de cette page. En cas de changement important,
+      vous en serez informé(e) dans l'application.
     </p>
 
     <footer>

@@ -4,480 +4,444 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <title>Juste Nous, le quiz de couple basé sur vos vrais messages</title>
-  <meta name="description" content="Importez vos conversations WhatsApp, Instagram ou Snapchat : Juste Nous les transforme en jeux de couple. Devinez qui a dit quoi, défiez-vous, redécouvrez votre histoire. 100 % privé, tout reste sur votre téléphone." />
+  <meta name="description" content="Juste Nous transforme vos vraies conversations WhatsApp, Instagram ou Snapchat en jeux de couple. Devinez qui a dit quoi, défiez-vous chaque jour. Disponible sur Android, bientôt sur iPhone." />
+  <meta name="theme-color" content="#FFF6EC" />
 
-  <!-- PARTAGE SOCIAL (Open Graph) -->
   <meta property="og:type" content="website" />
-  <meta property="og:title" content="Juste Nous : Quiz Messages" />
-  <meta property="og:description" content="Vos vrais messages deviennent des jeux de couple. Rejouez votre histoire, découvrez qui connaît vraiment l'autre." />
+  <meta property="og:title" content="Juste Nous : le quiz de couple basé sur vos vrais messages" />
+  <meta property="og:description" content="Vos vrais messages deviennent des jeux de couple. Qui connaît vraiment l'autre ?" />
   <meta property="og:url" content="https://justenous.github.io/" />
+  <meta property="og:image" content="https://justenous.github.io/logo.png" />
   <link rel="canonical" href="https://justenous.github.io/" />
   <link rel="icon" type="image/png" href="logo.png" />
   <link rel="apple-touch-icon" href="logo.png" />
 
-  <!-- Détection OS AVANT le rendu (évite tout flash de mauvais CTA) -->
+  <!-- Android → fiche Google Play, avant tout rendu.
+       Les robots (Googlebot smartphone, aperçus de liens) et ?web=1 restent sur la page. -->
   <script>
     (function () {
+      var PLAY = "https://play.google.com/store/apps/details?id=com.nosbulles.app&hl=fr";
       var ua = navigator.userAgent || "";
+      var params = new URLSearchParams(location.search);
+      var bot = /bot|crawl|spider|slurp|facebookexternalhit|whatsapp|telegram|preview/i.test(ua);
       var os = "desktop";
       if (/android/i.test(ua)) os = "android";
       else if (/iphone|ipad|ipod/i.test(ua) || (/Macintosh/.test(ua) && "ontouchend" in document)) os = "ios";
       document.documentElement.setAttribute("data-os", os);
+
+      if (os === "android" && !bot && !params.has("web")) {
+        // Attribution Play Console : les utm_* entrants sont regroupés dans "referrer".
+        var bits = [];
+        ["utm_source", "utm_medium", "utm_campaign", "utm_term", "utm_content"].forEach(function (k) {
+          if (params.get(k)) bits.push(k + "=" + params.get(k));
+        });
+        var ref = params.get("referrer") || bits.join("&");
+        location.replace(PLAY + (ref ? "&referrer=" + encodeURIComponent(ref) : ""));
+      }
     })();
   </script>
 
-  <!-- Cloudflare Web Analytics (sans cookie) — seul script tiers, aucun cookie posé. -->
+  <!-- Cloudflare Web Analytics (sans cookie) -->
   <script defer src="https://static.cloudflareinsights.com/beacon.min.js"
           data-cf-beacon='{"token": "4acbc3971ac8401a97aee69ae58585d1"}'></script>
 
   <style>
-    /* ===== Palette réelle de l'app "Juste Nous" (app_theme.dart) =====
-       Crème (fond)        #FFF6EC
-       Surface             #FFFDF9
-       Jaune joie          #FFDE59
-       Rose romantique     #E93982  (accents)
-       Rose profond        #C81E6A  (fond des CTA — texte blanc, contraste AA 5.46:1)
-       Encre (texte)       #34212C
-       Sous-texte          #8A7580
-       RÈGLE : jamais de texte blanc sur fond jaune. Texte = encre. */
+    @font-face { font-family: "Fredoka"; font-weight: 600; font-display: swap; src: url("fonts/Fredoka-SemiBold.ttf") format("truetype"); }
+    @font-face { font-family: "Fredoka"; font-weight: 700; font-display: swap; src: url("fonts/Fredoka-Bold.ttf") format("truetype"); }
+    @font-face { font-family: "Nunito"; font-weight: 400; font-display: swap; src: url("fonts/Nunito-Regular.ttf") format("truetype"); }
+    @font-face { font-family: "Nunito"; font-weight: 700; font-display: swap; src: url("fonts/Nunito-Bold.ttf") format("truetype"); }
+
+    /* Palette de l'app (lib/theme/app_theme.dart). Jamais de texte blanc sur jaune. */
     :root {
-      --creme:   #FFF6EC;
+      --cream: #FFF6EC;
       --surface: #FFFDF9;
-      --jaune:   #FFDE59;
-      --rose:    #E93982;
-      --rose-cta:#C81E6A;
-      --ink:     #34212C;
-      --sub:     #6E5A63;   /* sous-texte assombri pour contraste AA sur crème */
-      --radius:  22px;
-      --shadow:  0 18px 40px -18px rgba(52,33,44,.35);
+      --yellow: #FFDE59;
+      --rose: #E93982;
+      --rose-light: #F24B95;
+      --rose-dark: #C81E6A;
+      --ink: #34212C;
+      --sub: #6E5A63;
+      --line: rgba(52,33,44,.12);
+      --radius: 22px;
+      --shadow: 0 18px 40px -18px rgba(52,33,44,.35);
+      --head: "Fredoka", ui-rounded, "SF Pro Rounded", system-ui, sans-serif;
+      --body: "Nunito", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
     }
 
     * { box-sizing: border-box; }
-    html { scroll-behavior: smooth; }
+    html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
     html, body { margin: 0; padding: 0; }
-
     body {
-      background: var(--creme);
+      background: var(--cream);
       color: var(--ink);
-      font-family: ui-rounded, "SF Pro Rounded", "Segoe UI", system-ui, -apple-system, Roboto, Helvetica, Arial, sans-serif;
-      line-height: 1.5;
+      font-family: var(--body);
+      font-size: 17px;
+      line-height: 1.55;
       -webkit-font-smoothing: antialiased;
       overflow-x: hidden;
     }
+    img, svg { max-width: 100%; display: block; }
+    a { color: var(--rose-dark); }
 
-    /* ===== Visibilité selon l'OS =====
-       Avant JS : les deux CTA s'affichent (comportement desktop). */
-    .only-desktop { display: none; }
-    [data-os="desktop"] .only-desktop { display: flex; }
-    [data-os="android"] .for-ios { display: none !important; }
-    [data-os="ios"] .for-android { display: none !important; }
-
-    a { color: var(--rose-cta); }
-    img, svg { max-width: 100%; }
-
-    .container { width: 100%; max-width: 1080px; margin: 0 auto;
-      padding-left: max(20px, env(safe-area-inset-left));
-      padding-right: max(20px, env(safe-area-inset-right)); }
-    .section { padding: clamp(48px, 9vw, 88px) 0; }
-
-    h1, h2, h3 { line-height: 1.08; letter-spacing: -0.5px; margin: 0; }
-    h1 { font-size: clamp(34px, 8.5vw, 60px); font-weight: 800; }
-    h2 { font-size: clamp(26px, 5.5vw, 40px); font-weight: 800; }
-    .lead { font-size: clamp(16px, 4.2vw, 20px); color: var(--sub); }
+    .container {
+      width: 100%; max-width: 1080px; margin: 0 auto;
+      padding-left: max(16px, env(safe-area-inset-left));
+      padding-right: max(16px, env(safe-area-inset-right));
+    }
+    .section { padding: clamp(56px, 10vw, 96px) 0; }
+    h1, h2, h3 { font-family: var(--head); font-weight: 700; line-height: 1.08; letter-spacing: -.3px; margin: 0; }
+    h1 { font-size: clamp(38px, 10vw, 64px); }
+    h2 { font-size: clamp(28px, 6.5vw, 42px); }
+    h3 { font-size: 20px; font-weight: 600; }
+    .lead { font-size: clamp(17px, 4.4vw, 20px); color: var(--sub); }
+    .center { text-align: center; }
 
     .eyebrow {
-      display: inline-block;
-      font-weight: 800;
-      font-size: 14px;
-      letter-spacing: 2px;
-      text-transform: uppercase;
-      color: var(--ink);
-      background: var(--jaune);
-      padding: 7px 15px;
-      border-radius: 999px;
+      display: inline-flex; align-items: center; gap: 8px;
+      font-family: var(--head); font-weight: 600; font-size: 14px; letter-spacing: 1.5px; text-transform: uppercase;
+      color: var(--ink); background: var(--yellow);
+      padding: 7px 14px; border-radius: 999px;
     }
-    .logo { width: 74px; height: 74px; border-radius: 20px; box-shadow: var(--shadow); display: inline-block; }
 
     /* ===== Boutons ===== */
     .btn {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-      border: none;
-      border-radius: var(--radius);
-      padding: 17px 26px;
-      font-size: 18px;
-      font-weight: 800;
-      font-family: inherit;
-      cursor: pointer;
-      text-decoration: none;
-      transition: transform .08s ease, filter .15s ease;
-      width: 100%;
+      display: inline-flex; align-items: center; justify-content: center; gap: 10px;
+      border: 0; border-radius: 999px; cursor: pointer; text-decoration: none;
+      font-family: var(--head); font-weight: 600; font-size: 19px;
+      padding: 18px 30px; min-height: 58px;
+      background: var(--rose-dark); color: #fff;
+      box-shadow: 0 14px 28px -12px rgba(200,30,106,.65);
+      transition: transform .12s ease, filter .15s ease;
+      -webkit-tap-highlight-color: transparent;
     }
-    .btn:active { transform: scale(.98); }
-    .btn-primary { background: var(--rose-cta); color: #fff; box-shadow: var(--shadow); }
-    .btn-primary:hover { filter: brightness(1.06); }
-    .btn:disabled { opacity: .6; cursor: default; }
-    /* Le bouton Play s'adapte à son contenu (pas pleine largeur), centré */
-    .play-btn { width: auto; min-width: 240px; max-width: 100%; }
-    .for-android { text-align: center; }
+    .btn:hover { filter: brightness(1.07); }
+    .btn:active { transform: scale(.97); }
+    .btn:focus-visible, .icon-btn:focus-visible { outline: 3px solid var(--yellow); outline-offset: 3px; }
+    .btn-small { font-size: 15px; padding: 10px 18px; min-height: 42px; box-shadow: none; }
+    .btn-block { width: 100%; }
+    .btn .apple { width: 18px; height: 18px; fill: currentColor; margin-top: -2px; }
+    .play-link { display: none; font-weight: 700; font-size: 15px; color: var(--ink); text-decoration: none; border-bottom: 2px solid var(--yellow); }
+    [data-os="desktop"] .play-link { display: inline-block; }
 
-    /* ===== Module d'action (CTA OS-routé) ===== */
-    .action { width: 100%; max-width: 420px; }
-    .reassurance { display: flex; align-items: center; gap: 7px; justify-content: center;
-                   font-size: 13.5px; color: var(--sub); margin-top: 12px; }
-    .sep {
-      align-items: center; gap: 12px; margin: 18px 0;
-      color: var(--sub); font-size: 12px; font-weight: 700;
-      text-transform: uppercase; letter-spacing: 1.5px;
+    /* ===== Header collant ===== */
+    .topbar {
+      position: sticky; top: 0; z-index: 30;
+      background: rgba(255,246,236,.86);
+      -webkit-backdrop-filter: saturate(1.4) blur(12px); backdrop-filter: saturate(1.4) blur(12px);
+      border-bottom: 1px solid transparent;
+      padding-top: env(safe-area-inset-top);
+      transition: border-color .2s ease;
     }
-    .sep::before, .sep::after { content: ""; flex: 1; height: 1px; background: rgba(52,33,44,.15); }
+    .topbar.scrolled { border-bottom-color: var(--line); }
+    .topbar .container { display: flex; align-items: center; justify-content: space-between; gap: 12px; height: 64px; }
+    .brand { display: flex; align-items: center; gap: 10px; text-decoration: none; color: var(--ink); font-family: var(--head); font-weight: 700; font-size: 20px; }
+    .brand img { width: 38px; height: 38px; border-radius: 11px; }
 
-    .ios-card { background: var(--jaune); border-radius: var(--radius); padding: 18px; text-align: left; }
-    .ios-card .t { font-weight: 800; font-size: 16px; }
-    .ios-card .d { font-size: 13.5px; margin: 2px 0 12px; }
-    .email-row { display: flex; flex-direction: column; gap: 10px; }
-    input[type="email"] {
-      width: 100%; padding: 15px 16px; font-size: 16px; /* >=16px : pas de zoom iOS */
-      border: 2px solid var(--ink); border-radius: 14px; background: #fff; color: var(--ink);
-      font-family: inherit;
-    }
-    input[type="email"]:focus { outline: none; border-color: var(--rose-cta);
-      box-shadow: 0 0 0 3px rgba(200,30,106,.22); }
-    .form-msg { font-size: 13.5px; font-weight: 700; margin: 10px 2px 0; min-height: 1.1em; }
-    .form-msg.ok  { color: #1c6b3a; }
-    .form-msg.err { color: #9e1b1b; }
-
-    /* ===== HERO ===== */
-    .hero { padding-top: clamp(30px, 7vw, 56px); }
-    .hero-grid { display: grid; grid-template-columns: 1fr; gap: clamp(30px, 6vw, 56px); align-items: center; }
+    /* ===== Hero ===== */
+    .hero { padding-top: clamp(24px, 6vw, 56px); }
+    .hero-grid { display: grid; gap: clamp(36px, 7vw, 60px); align-items: center; }
     .hero-copy { text-align: center; }
-    .hero h1 { margin: 16px 0 14px; }
+    .hero h1 { margin: 18px 0 16px; }
     .hero h1 .accent { color: var(--rose); }
-    .hero .lead { max-width: 30ch; margin: 0 auto 26px; }
-    .hero .action { margin: 0 auto; }
+    .hero .lead { max-width: 32ch; margin: 0 auto 28px; }
+    .cta-stack { display: flex; flex-direction: column; align-items: center; gap: 14px; }
+    .cta-stack .btn { width: 100%; max-width: 380px; }
+    .reassure { font-size: 14px; color: var(--sub); display: flex; flex-wrap: wrap; justify-content: center; gap: 6px 14px; }
+    .reassure span { display: inline-flex; align-items: center; gap: 6px; }
 
-    /* ===== Maquette téléphone (jeu "Qui a dit ça ?") ===== */
-    .phone-wrap { display: flex; justify-content: center; }
+    /* Visuel : illustration du couple + maquette du jeu */
+    .visual { position: relative; display: flex; justify-content: center; }
+    .duo { width: min(400px, 78vw); border-radius: 32px; margin-right: 22%; }
     .phone {
-      width: min(280px, 78vw);
-      background: #12090d;
-      border-radius: 40px;
-      padding: 12px;
-      box-shadow: 0 40px 80px -30px rgba(52,33,44,.6);
-      position: relative;
+      position: absolute; right: 0; bottom: -34px;
+      width: min(170px, 42vw); background: #12090d; border-radius: 30px; padding: 8px;
+      box-shadow: 0 30px 60px -24px rgba(52,33,44,.65);
+      transform: rotate(5deg);
+      animation: float 5s ease-in-out infinite;
     }
-    .phone::before { /* encoche */
-      content: ""; position: absolute; top: 16px; left: 50%; transform: translateX(-50%);
-      width: 90px; height: 20px; background: #12090d; border-radius: 0 0 14px 14px; z-index: 3;
-    }
-    .screen {
-      background: var(--creme); border-radius: 30px; overflow: hidden;
-      padding: 26px 16px 18px; min-height: 480px; display: flex; flex-direction: column;
-    }
-    .screen .overline { font-size: 11px; font-weight: 800; letter-spacing: 2px; color: var(--sub); text-align: center; }
-    .dots { display: flex; gap: 5px; justify-content: center; margin: 8px 0 18px; }
-    .dots i { width: 22px; height: 4px; border-radius: 999px; background: rgba(52,33,44,.14); display: block; }
-    .dots i.on { background: var(--rose); }
-    .q-card {
-      background: linear-gradient(135deg, #F24B95, var(--rose) 55%, var(--rose-cta));
-      border-radius: 20px; padding: 18px; color: #fff; margin-bottom: 16px;
-    }
-    .q-card .q-label { font-size: 12px; font-weight: 800; opacity: .9; letter-spacing: .5px; }
-    .bubble {
-      background: #fff; color: var(--ink); border-radius: 16px 16px 16px 4px;
-      padding: 12px 14px; margin-top: 12px; font-size: 15px; font-weight: 600; box-shadow: 0 6px 14px -8px rgba(0,0,0,.4);
-    }
-    .answers { display: grid; gap: 10px; margin-top: auto; }
-    .answer {
-      background: var(--surface); border: 2px solid rgba(52,33,44,.1); border-radius: 16px;
-      padding: 14px; font-weight: 800; font-size: 15px; text-align: center; color: var(--ink);
-    }
-    .answer.pick { border-color: var(--rose); background: #fff; color: var(--rose-cta); }
+    .screen { background: var(--cream); border-radius: 23px; padding: 16px 11px 12px; }
+    .screen .over { font-family: var(--head); font-size: 9px; font-weight: 600; letter-spacing: 1.5px; color: var(--sub); text-align: center; }
+    .q-card { background: linear-gradient(135deg, var(--rose-light), var(--rose) 55%, var(--rose-dark)); border-radius: 15px; padding: 11px; color: #fff; margin: 9px 0 10px; }
+    .q-card b { font-family: var(--head); font-size: 10px; letter-spacing: .5px; font-weight: 600; }
+    .bubble { background: #fff; color: var(--ink); border-radius: 12px 12px 12px 3px; padding: 8px 9px; margin-top: 8px; font-size: 11.5px; font-weight: 700; line-height: 1.35; }
+    .answer { background: var(--surface); border: 2px solid var(--line); border-radius: 12px; padding: 7px; font-family: var(--head); font-weight: 600; font-size: 12px; text-align: center; margin-top: 7px; }
+    .answer.pick { border-color: var(--rose); color: var(--rose-dark); background: #fff; }
+    @keyframes float { 0%,100% { transform: rotate(5deg) translateY(0); } 50% { transform: rotate(4deg) translateY(-8px); } }
 
-    /* ===== Étapes "Comment ça marche" ===== */
-    .steps { display: grid; grid-template-columns: 1fr; gap: 18px; margin-top: 34px; }
+    /* ===== Bandeau sources ===== */
+    .sources { display: flex; justify-content: center; flex-wrap: wrap; gap: 10px; margin-top: clamp(48px, 9vw, 72px); }
+    .chip { background: var(--surface); border: 1px solid var(--line); border-radius: 999px; padding: 8px 16px; font-weight: 700; font-size: 15px; }
+
+    /* ===== Étapes ===== */
+    .steps { display: grid; gap: 16px; margin-top: 34px; }
     .step { background: var(--surface); border-radius: var(--radius); padding: 24px; box-shadow: var(--shadow); }
-    .step .num {
-      width: 40px; height: 40px; border-radius: 12px; background: var(--jaune); color: var(--ink);
-      display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 18px; margin-bottom: 14px;
-    }
-    .step h3 { font-size: 20px; margin-bottom: 6px; }
-    .step p { color: var(--sub); font-size: 15px; margin: 0; }
+    .step .num { width: 42px; height: 42px; border-radius: 13px; background: var(--yellow); display: grid; place-items: center; font-family: var(--head); font-weight: 700; font-size: 19px; margin-bottom: 14px; }
+    .step h3 { margin-bottom: 6px; }
+    .step p { color: var(--sub); font-size: 16px; margin: 0; }
 
-    /* ===== Grille de jeux ===== */
-    .center { text-align: center; }
-    .center .lead { max-width: 46ch; margin: 12px auto 0; }
-    .games { display: grid; grid-template-columns: 1fr; gap: 16px; margin-top: 36px; }
-    .game {
-      background: var(--surface); border-radius: var(--radius); padding: 22px;
-      border: 2px solid rgba(233,57,130,.14); text-align: left;
-    }
-    .game .ico { font-size: 26px; }
-    .game h3 { font-size: 19px; margin: 10px 0 6px; }
-    .game p { color: var(--sub); font-size: 14.5px; margin: 0; }
+    /* ===== Jeux ===== */
+    .games { display: grid; gap: 14px; margin-top: 34px; }
+    .game { background: var(--surface); border: 2px solid rgba(233,57,130,.14); border-radius: var(--radius); padding: 22px; text-align: left; display: flex; gap: 16px; align-items: flex-start; }
+    .game .ico { flex: none; width: 52px; height: 52px; border-radius: 16px; background: #FFE9F2; display: grid; place-items: center; font-size: 26px; }
+    .game h3 { margin-bottom: 4px; }
+    .game p { color: var(--sub); font-size: 15.5px; margin: 0; }
 
-    /* ===== Bloc compétition (fond rose) ===== */
-    .band { background: linear-gradient(160deg, var(--rose), var(--rose-cta)); color: #fff; border-radius: 28px; padding: clamp(28px, 6vw, 48px); }
+    /* ===== Bandeau préinscription (milieu de page) ===== */
+    .promo {
+      background: var(--yellow); border-radius: 30px;
+      padding: clamp(30px, 7vw, 54px) clamp(22px, 6vw, 54px);
+      display: grid; gap: 22px; align-items: center; text-align: center;
+    }
+    .promo h2 { color: var(--ink); }
+    .promo p { margin: 10px auto 0; max-width: 40ch; color: var(--ink); opacity: .85; }
+    .promo .btn { width: 100%; max-width: 360px; justify-self: center; }
+
+    /* ===== Le match (fond rose) ===== */
+    .band { background: linear-gradient(160deg, var(--rose), var(--rose-dark)); color: #fff; border-radius: 30px; padding: clamp(30px, 7vw, 54px) clamp(22px, 6vw, 54px); }
     .band h2 { color: #fff; }
-    .band .lead { color: rgba(255,255,255,.9); }
-    .rewards { display: grid; grid-template-columns: 1fr; gap: 14px; margin-top: 26px; }
-    .reward { background: rgba(255,255,255,.14); border-radius: 18px; padding: 18px; backdrop-filter: blur(2px); }
-    .reward .r-top { display: flex; justify-content: space-between; align-items: baseline; gap: 10px; }
-    .reward .r-name { font-weight: 800; font-size: 17px; }
-    .reward .r-pts { background: var(--jaune); color: var(--ink); font-weight: 800; font-size: 13px; padding: 4px 10px; border-radius: 999px; white-space: nowrap; }
-    .reward .r-desc { font-size: 14px; color: rgba(255,255,255,.9); margin-top: 6px; }
-
-    /* ===== Bloc "Notre histoire" (fond jaune, texte encre) ===== */
-    .story { background: var(--jaune); border-radius: 28px; padding: clamp(28px, 6vw, 48px); text-align: center; }
-    .story h2 { color: var(--ink); }
-    .story p { color: var(--ink); opacity: .82; max-width: 44ch; margin: 12px auto 0; font-size: 16px; }
+    .band .lead { color: rgba(255,255,255,.92); max-width: 44ch; margin: 12px auto 0; }
+    .rewards { display: grid; gap: 12px; margin-top: 28px; }
+    .reward { background: rgba(255,255,255,.15); border-radius: 18px; padding: 16px 18px; }
+    .reward .top { display: flex; justify-content: space-between; align-items: center; gap: 10px; }
+    .reward .name { font-family: var(--head); font-weight: 600; font-size: 18px; }
+    .reward .pts { background: var(--yellow); color: var(--ink); font-family: var(--head); font-weight: 600; font-size: 13px; padding: 4px 10px; border-radius: 999px; white-space: nowrap; }
+    .reward .desc { font-size: 15px; color: rgba(255,255,255,.92); margin-top: 4px; }
 
     /* ===== Confidentialité ===== */
     .privacy { text-align: center; }
-    .privacy .lock { font-size: 38px; }
-    .privacy h2 { margin: 10px 0 12px; }
-    .privacy p { color: var(--sub); max-width: 48ch; margin: 0 auto; font-size: 16.5px; }
+    .privacy .lock { width: 64px; height: 64px; border-radius: 20px; background: var(--surface); box-shadow: var(--shadow); display: grid; place-items: center; font-size: 30px; margin: 0 auto 18px; }
+    .privacy p { color: var(--sub); max-width: 46ch; margin: 12px auto 0; }
 
     /* ===== CTA final ===== */
     .final { text-align: center; }
-    .final .action { margin: 26px auto 0; }
+    .final .cta-stack { margin-top: 26px; }
 
-    /* ===== Footer ===== */
-    footer { border-top: 1px solid rgba(52,33,44,.12); padding: 28px 0 90px; text-align: center; font-size: 13px; color: var(--sub); }
+    footer { border-top: 1px solid var(--line); padding: 28px 0 calc(32px + env(safe-area-inset-bottom)); text-align: center; font-size: 14px; color: var(--sub); }
     footer a { color: var(--ink); }
-    .dot { margin: 0 8px; opacity: .5; }
-    .disclaimer { font-size: 11.5px; opacity: .8; max-width: 60ch; margin: 14px auto 0; }
+    footer .dot { margin: 0 8px; opacity: .5; }
+    .disclaimer { font-size: 12px; opacity: .85; max-width: 60ch; margin: 14px auto 0; }
 
-    /* ===== Barre CTA collante (mobile) ===== */
-    .sticky {
-      position: fixed; left: 0; right: 0; bottom: 0; z-index: 20;
-      display: flex; justify-content: center;
-      padding: 12px max(20px, env(safe-area-inset-right))
-               calc(12px + env(safe-area-inset-bottom)) max(20px, env(safe-area-inset-left));
-      background: rgba(255,246,236,.92); backdrop-filter: blur(10px);
-      border-top: 1px solid rgba(52,33,44,.1);
+    /* ===== Fenêtre de préinscription ===== */
+    .sheet-backdrop {
+      position: fixed; inset: 0; z-index: 50; background: rgba(52,33,44,.45);
+      display: flex; align-items: flex-end; justify-content: center;
+      opacity: 0; pointer-events: none; transition: opacity .2s ease;
     }
-    .sticky .btn { max-width: 460px; }
-    [data-os="desktop"] .sticky { display: none; }
+    .sheet-backdrop.open { opacity: 1; pointer-events: auto; }
+    .sheet {
+      width: 100%; max-width: 480px; background: var(--surface);
+      border-radius: 28px 28px 0 0;
+      padding: 14px 22px calc(26px + env(safe-area-inset-bottom));
+      transform: translateY(100%); transition: transform .28s cubic-bezier(.2,.8,.2,1);
+      position: relative;
+    }
+    .sheet-backdrop.open .sheet { transform: translateY(0); }
+    .grip { width: 44px; height: 5px; border-radius: 999px; background: var(--line); margin: 0 auto 18px; }
+    .icon-btn { position: absolute; top: 12px; right: 12px; width: 40px; height: 40px; border-radius: 50%; border: 0; background: var(--cream); color: var(--ink); font-size: 20px; cursor: pointer; }
+    .sheet .eyebrow { margin-bottom: 12px; }
+    .sheet h2 { font-size: 28px; }
+    .sheet p.intro { color: var(--sub); margin: 8px 0 18px; font-size: 16px; }
+    .sheet input[type="email"] {
+      width: 100%; padding: 16px 18px; font-size: 17px; /* ≥16px : pas de zoom iOS */
+      font-family: var(--body); color: var(--ink); background: #fff;
+      border: 2px solid rgba(52,33,44,.25); border-radius: 16px; margin-bottom: 12px;
+    }
+    .sheet input[type="email"]:focus { outline: none; border-color: var(--rose-dark); box-shadow: 0 0 0 4px rgba(200,30,106,.18); }
+    .legal { font-size: 12.5px; color: var(--sub); margin: 12px 0 0; text-align: center; }
+    .form-msg { font-weight: 700; font-size: 15px; margin: 12px 0 0; min-height: 1.2em; text-align: center; }
+    .form-msg.err { color: #9e1b1b; }
+    .done { display: none; text-align: center; padding: 10px 0 6px; }
+    .done .big { font-size: 46px; }
+    .done h2 { margin: 8px 0 6px; }
+    .done p { color: var(--sub); margin: 0 0 20px; }
+    .sheet.sent form { display: none; }
+    .sheet.sent .done { display: block; }
 
-    /* ===== Desktop : hero en 2 colonnes ===== */
+    @media (min-width: 640px) {
+      .sheet-backdrop { align-items: center; padding: 20px; }
+      .sheet { border-radius: 28px; padding-bottom: 28px; transform: translateY(24px) scale(.97); }
+      .sheet-backdrop.open .sheet { transform: none; }
+      .grip { display: none; }
+    }
     @media (min-width: 860px) {
       .hero-grid { grid-template-columns: 1.05fr .95fr; }
       .hero-copy { text-align: left; }
-      .hero-copy .for-android { text-align: left; }
       .hero .lead { margin-left: 0; }
-      .hero .action { margin: 0; }
+      .hero .cta-stack { align-items: flex-start; }
+      .hero .reassure { justify-content: flex-start; }
       .steps { grid-template-columns: repeat(3, 1fr); }
       .games { grid-template-columns: repeat(2, 1fr); }
       .rewards { grid-template-columns: repeat(3, 1fr); }
-      .sticky { display: none; }
-      footer { padding-bottom: 40px; }
+      .promo { grid-template-columns: 1fr auto; text-align: left; }
+      .promo p { margin-left: 0; }
+      .promo .btn { width: auto; }
     }
-
-    @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+    @media (prefers-reduced-motion: reduce) {
+      html { scroll-behavior: auto; }
+      .phone { animation: none; }
+      .sheet, .sheet-backdrop { transition: none; }
+    }
   </style>
 </head>
 
 <body>
-  <!-- ================= HERO ================= -->
-  <header class="hero section container">
-    <div class="hero-grid">
-      <div class="hero-copy">
-        <img class="logo" src="logo.png" width="74" height="74" alt="Juste Nous" />
-        <h1>Rejouez <span class="accent">votre histoire.</span></h1>
-        <p class="lead">
-          Le quiz de couple basé sur vos <strong>vraies conversations</strong>.
-          Importez vos messages WhatsApp, Instagram ou Snapchat. Juste Nous les
-          transforme en jeux à jouer à deux.
-        </p>
-
-        <!-- Module d'action principal (routé selon l'OS) -->
-        <div class="action">
-          <div class="for-android">
-            <a class="btn btn-primary play-btn" href="https://play.google.com/store/apps?hl=fr" rel="noopener">
-              ▶ Télécharger sur Google Play
-            </a>
-          </div>
-
-          <div class="sep only-desktop">ou</div>
-
-          <div class="for-ios">
-            <div class="ios-card">
-              <div class="t">Bientôt sur iPhone</div>
-              <div class="d">Laisse ton email, on te prévient au lancement.</div>
-              <form class="waitlist-form" action="https://formspree.io/f/xwvypqww" method="POST" novalidate>
-                <div class="email-row">
-                  <input type="email" name="email" inputmode="email" autocomplete="email"
-                         placeholder="ton@email.com" aria-label="Adresse email" required />
-                  <button type="submit" class="btn btn-primary">Me prévenir</button>
-                </div>
-                <input type="hidden" name="source" value="landing" />
-                <p class="form-msg" role="status" aria-live="polite"></p>
-              </form>
-            </div>
-          </div>
-
-          <p class="reassurance">🔒 Vos messages ne quittent jamais votre téléphone.</p>
-        </div>
-      </div>
-
-      <!-- Maquette téléphone : le jeu "Qui a dit ça ?" -->
-      <div class="phone-wrap" aria-hidden="true">
-        <div class="phone">
-          <div class="screen">
-            <div class="overline">AUJOURD'HUI</div>
-            <div class="dots"><i class="on"></i><i class="on"></i><i></i><i></i><i></i></div>
-            <div class="q-card">
-              <div class="q-label">QUI A DIT ÇA ?</div>
-              <div class="bubble">Arrête de me faire rire je dois dormir 😭</div>
-            </div>
-            <div class="answers">
-              <div class="answer pick">Toi</div>
-              <div class="answer">Elle / Lui</div>
-            </div>
-          </div>
-        </div>
-      </div>
+  <!-- ===== Header ===== -->
+  <header class="topbar" id="topbar">
+    <div class="container">
+      <a class="brand" href="#top" aria-label="Juste Nous, retour en haut">
+        <img src="logo.png" width="38" height="38" alt="" />
+        Juste Nous
+      </a>
+      <button class="btn btn-small" type="button" data-signup="header">Me préinscrire</button>
     </div>
   </header>
 
-  <!-- ================= COMMENT ÇA MARCHE ================= -->
-  <section class="section container">
-    <div class="center">
-      <span class="eyebrow">3 étapes</span>
-      <h2 style="margin-top:14px">Prêt à jouer en 2 minutes</h2>
-    </div>
-    <div class="steps">
-      <div class="step">
-        <div class="num">1</div>
-        <h3>Importez votre conversation</h3>
-        <p>Depuis WhatsApp, Instagram ou Snapchat. Un simple fichier d'export, et c'est parti.</p>
-      </div>
-      <div class="step">
-        <div class="num">2</div>
-        <h3>L'app crée vos jeux</h3>
-        <p>Vos vrais messages sont analysés <strong>directement sur votre téléphone</strong>. Rien n'est envoyé.</p>
-      </div>
-      <div class="step">
-        <div class="num">3</div>
-        <h3>Jouez à deux</h3>
-        <p>Répondez chacun de votre côté, puis découvrez vos réponses en même temps.</p>
-      </div>
-    </div>
-  </section>
-
-  <!-- ================= LES JEUX ================= -->
-  <section class="section container center">
-    <span class="eyebrow">Les jeux</span>
-    <h2 style="margin-top:14px">Qui connaît vraiment l'autre ?</h2>
-    <p class="lead">Quatre façons de vous défier avec vos propres messages.</p>
-    <div class="games">
-      <div class="game">
-        <div class="ico">💬</div>
-        <h3>Qui a dit ça ?</h3>
-        <p>Un vrai message s'affiche. À toi de deviner lequel de vous deux l'a écrit.</p>
-      </div>
-      <div class="game">
-        <div class="ico">🔁</div>
-        <h3>Qui le dit le plus souvent ?</h3>
-        <p>Un mot, une expression… lequel de vous deux l'utilise le plus dans vos échanges ?</p>
-      </div>
-      <div class="game">
-        <div class="ico">🎭</div>
-        <h3>Ce message est…</h3>
-        <p>Romantique, coquin, passif-agressif ? Étiquette l'ambiance, et vois si vous êtes d'accord.</p>
-      </div>
-      <div class="game">
-        <div class="ico">🎯</div>
-        <h3>Quel émoji ?</h3>
-        <p>L'émoji du message est masqué. Retrouve celui qui a vraiment été envoyé.</p>
-      </div>
-    </div>
-  </section>
-
-  <!-- ================= COMPÉTITION / RÉCOMPENSES ================= -->
-  <section class="section container">
-    <div class="band">
-      <div class="center">
-        <span class="eyebrow">Le match</span>
-        <h2 style="margin-top:14px">Un point pour qui connaît le mieux l'autre</h2>
-        <p class="lead">Gardez le score jour après jour, grimpez au classement, cumulez votre série de jours ensemble. Puis transformez vos points en vraies récompenses.</p>
-      </div>
-      <div class="rewards">
-        <div class="reward">
-          <div class="r-top"><span class="r-name">Carte Massage</span><span class="r-pts">75 pts</span></div>
-          <div class="r-desc">« Je veux un massage ! »</div>
-        </div>
-        <div class="reward">
-          <div class="r-top"><span class="r-name">Carte Cinéma</span><span class="r-pts">100 pts</span></div>
-          <div class="r-desc">Choisis le prochain film à regarder ensemble.</div>
-        </div>
-        <div class="reward">
-          <div class="r-top"><span class="r-name">Carte Gage</span><span class="r-pts">125 pts</span></div>
-          <div class="r-desc">Ton gage est… à toi de fixer les règles.</div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- ================= NOTRE HISTOIRE ================= -->
-  <section class="section container">
-    <div class="story">
-      <span class="eyebrow">Notre histoire</span>
-      <h2 style="margin-top:14px">Et quand vous voulez juste vous souvenir…</h2>
-      <p>
-        Redécouvrez toute votre conversation, remontez jusqu'à votre tout premier message,
-        et gardez vos moments préférés en favori. Votre histoire, rien qu'à vous.
-      </p>
-    </div>
-  </section>
-
-  <!-- ================= CONFIDENTIALITÉ ================= -->
-  <section class="section container privacy">
-    <div class="lock">🔒</div>
-    <h2>Vos messages restent chez vous</h2>
-    <p>
-      Juste Nous analyse vos conversations <strong>directement sur votre téléphone</strong>.
-      Le contenu de vos messages n'est jamais envoyé, ni stocké sur un serveur. Jamais.
-      Aucun cookie publicitaire, aucun traceur.
-    </p>
-  </section>
-
-  <!-- ================= CTA FINAL ================= -->
-  <section class="section container final">
-    <h2>Prêts à voir qui gagne&nbsp;?</h2>
-    <div class="action">
-      <div class="for-android">
-        <a class="btn btn-primary play-btn" href="https://play.google.com/store/apps?hl=fr" rel="noopener">
-          ▶ Télécharger sur Google Play
-        </a>
-      </div>
-
-      <div class="sep only-desktop">ou</div>
-
-      <div class="for-ios">
-        <div class="ios-card">
-          <div class="t">Bientôt sur iPhone</div>
-          <div class="d">Laisse ton email, on te prévient au lancement.</div>
-          <form class="waitlist-form" action="https://formspree.io/f/xwvypqww" method="POST" novalidate>
-            <div class="email-row">
-              <input type="email" name="email" inputmode="email" autocomplete="email"
-                     placeholder="ton@email.com" aria-label="Adresse email" required />
-              <button type="submit" class="btn btn-primary">Me prévenir</button>
+  <main id="top">
+    <!-- ===== Hero ===== -->
+    <section class="hero section container" style="padding-bottom:0">
+      <div class="hero-grid">
+        <div class="hero-copy">
+          <span class="eyebrow">Bientôt sur iPhone</span>
+          <h1>Vos vrais messages deviennent <span class="accent">un jeu à deux.</span></h1>
+          <p class="lead">
+            Importez votre conversation WhatsApp, Instagram ou Snapchat.
+            Chaque jour, de nouvelles questions sur <strong>votre</strong> histoire.
+            Qui connaît vraiment l'autre&nbsp;?
+          </p>
+          <div class="cta-stack">
+            <button class="btn" type="button" data-signup="hero">
+              <svg class="apple" viewBox="0 0 384 512" aria-hidden="true"><path d="M318.7 268.7c-.2-36.7 16.4-64.4 50-84.8-18.8-26.9-47.2-41.7-84.7-44.6-35.5-2.8-74.3 20.7-88.5 20.7-15 0-49.4-19.7-76.4-19.7C63.3 141.2 4 184.8 4 273.5q0 39.3 14.4 81.2c12.8 36.7 59 126.7 107.2 125.2 25.2-.6 43-17.9 75.8-17.9 31.8 0 48.3 17.9 76.4 17.9 48.6-.7 90.4-82.5 102.6-119.3-65.2-30.7-61.7-90-61.7-91.9zm-56.6-164.2c27.3-32.4 24.8-61.9 24-72.5-24.1 1.4-52 16.4-67.9 34.9-17.5 19.8-27.8 44.3-25.6 71.9 26.1 2 49.9-11.4 69.5-34.3z"/></svg>
+              Me préinscrire sur iPhone
+            </button>
+            <div class="reassure">
+              <span>✉️ Un seul email, à la sortie</span>
+              <span>🔒 Messages 100 % sur le téléphone</span>
             </div>
-            <input type="hidden" name="source" value="landing-final" />
-            <p class="form-msg" role="status" aria-live="polite"></p>
-          </form>
+            <a class="play-link" href="https://play.google.com/store/apps/details?id=com.nosbulles.app&amp;hl=fr" rel="noopener">Sur Android&nbsp;? Déjà disponible sur Google Play →</a>
+          </div>
+        </div>
+
+        <div class="visual" aria-hidden="true">
+          <img class="duo" src="duo.svg" width="420" height="350" alt="" />
+          <div class="phone">
+            <div class="screen">
+              <div class="over">AUJOURD'HUI</div>
+              <div class="q-card">
+                <b>QUI A DIT ÇA ?</b>
+                <div class="bubble">Arrête de me faire rire, je dois dormir 😭</div>
+              </div>
+              <div class="answer pick">Moi</div>
+              <div class="answer">Lui</div>
+            </div>
+          </div>
         </div>
       </div>
 
-      <p class="reassurance">🔒 100 % privé · Traitement local · Aucun message stocké</p>
-    </div>
-  </section>
+      <div class="sources" aria-label="Conversations compatibles">
+        <span class="chip">💬 WhatsApp</span>
+        <span class="chip">📸 Instagram</span>
+        <span class="chip">👻 Snapchat</span>
+      </div>
+    </section>
 
-  <!-- ================= FOOTER ================= -->
+    <!-- ===== Comment ça marche ===== -->
+    <section class="section container">
+      <div class="center">
+        <span class="eyebrow">3 étapes</span>
+        <h2 style="margin-top:14px">Prêts à jouer en 2 minutes</h2>
+      </div>
+      <div class="steps">
+        <div class="step">
+          <div class="num">1</div>
+          <h3>Importez votre conversation</h3>
+          <p>Un simple export depuis WhatsApp, Instagram ou Snapchat, et c'est parti.</p>
+        </div>
+        <div class="step">
+          <div class="num">2</div>
+          <h3>L'app crée vos questions</h3>
+          <p>Vos messages sont analysés <strong>directement sur votre téléphone</strong>. Leur texte n'est jamais envoyé.</p>
+        </div>
+        <div class="step">
+          <div class="num">3</div>
+          <h3>Jouez chaque jour à deux</h3>
+          <p>Chacun répond de son côté, puis vous découvrez vos réponses ensemble.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== Les jeux ===== -->
+    <section class="section container center" style="padding-top:0">
+      <span class="eyebrow">Les jeux</span>
+      <h2 style="margin-top:14px">Qui connaît vraiment l'autre&nbsp;?</h2>
+      <p class="lead" style="max-width:40ch;margin:12px auto 0">Quatre façons de vous défier avec vos propres messages.</p>
+      <div class="games">
+        <div class="game">
+          <div class="ico">💬</div>
+          <div><h3>Qui a dit ça&nbsp;?</h3><p>Un vrai message s'affiche. Devinez lequel de vous deux l'a écrit.</p></div>
+        </div>
+        <div class="game">
+          <div class="ico">🔁</div>
+          <div><h3>Qui le dit le plus&nbsp;?</h3><p>Un mot, une expression… qui l'utilise le plus dans vos échanges&nbsp;?</p></div>
+        </div>
+        <div class="game">
+          <div class="ico">🎭</div>
+          <div><h3>Ce message est…</h3><p>Romantique, coquin, passif-agressif&nbsp;? Voyez si vous êtes d'accord.</p></div>
+        </div>
+        <div class="game">
+          <div class="ico">🎯</div>
+          <div><h3>Quel émoji&nbsp;?</h3><p>L'émoji est caché. Retrouvez celui qui a vraiment été envoyé.</p></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== Préinscription (milieu de page) ===== -->
+    <section class="container">
+      <div class="promo">
+        <div>
+          <h2>Soyez parmi les premiers sur iPhone</h2>
+          <p>Laissez votre email&nbsp;: on vous écrit une seule fois, le jour où Juste Nous arrive sur l'App Store.</p>
+        </div>
+        <button class="btn" type="button" data-signup="milieu">Me préinscrire</button>
+      </div>
+    </section>
+
+    <!-- ===== Le match ===== -->
+    <section class="section container">
+      <div class="band">
+        <div class="center">
+          <span class="eyebrow">Le match</span>
+          <h2 style="margin-top:14px">Un point pour qui connaît le mieux l'autre</h2>
+          <p class="lead">Gardez le score jour après jour, faites grimper votre série, puis échangez vos points contre de vraies récompenses.</p>
+        </div>
+        <div class="rewards">
+          <div class="reward"><div class="top"><span class="name">Carte Massage</span><span class="pts">75 pts</span></div><div class="desc">« Je veux un massage&nbsp;! »</div></div>
+          <div class="reward"><div class="top"><span class="name">Carte Cinéma</span><span class="pts">100 pts</span></div><div class="desc">Choisissez le prochain film à regarder ensemble.</div></div>
+          <div class="reward"><div class="top"><span class="name">Carte Gage</span><span class="pts">125 pts</span></div><div class="desc">Le gage&nbsp;? C'est le gagnant qui fixe les règles.</div></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== Confidentialité ===== -->
+    <section class="section container privacy" style="padding-top:0">
+      <div class="lock">🔒</div>
+      <h2>Vos messages restent chez vous</h2>
+      <p>
+        Juste Nous lit votre conversation <strong>directement sur votre téléphone</strong>.
+        Le texte de vos messages n'est jamais envoyé ni stocké sur un serveur.
+        Aucune publicité, aucune revente de données.
+      </p>
+    </section>
+
+    <!-- ===== CTA final ===== -->
+    <section class="section container final" style="padding-top:0">
+      <h2>Prêts à voir qui gagne&nbsp;?</h2>
+      <div class="cta-stack">
+        <button class="btn" type="button" data-signup="final">Me préinscrire sur iPhone</button>
+        <a class="play-link" href="https://play.google.com/store/apps/details?id=com.nosbulles.app&amp;hl=fr" rel="noopener">Sur Android&nbsp;? Déjà disponible sur Google Play →</a>
+      </div>
+    </section>
+  </main>
+
   <footer>
     <div class="container">
       <a href="privacy.html">Politique de confidentialité</a>
@@ -486,118 +450,108 @@
       <p class="disclaimer">
         WhatsApp, Instagram et Snapchat sont des marques de leurs détenteurs respectifs.
         Juste Nous n'est ni affiliée, ni sponsorisée, ni approuvée par ces sociétés.
+        Apple et App Store sont des marques d'Apple Inc.
       </p>
     </div>
   </footer>
 
-  <!-- ===== Barre CTA collante (mobile uniquement) ===== -->
-  <div class="sticky">
-    <a class="btn btn-primary play-btn for-android" href="https://play.google.com/store/apps?hl=fr" rel="noopener">
-      ▶ Télécharger sur Google Play
-    </a>
-    <button class="btn btn-primary for-ios" id="sticky-ios" type="button">
-      Me prévenir de la sortie iPhone
-    </button>
+  <!-- ===== Fenêtre de préinscription (Formspree) ===== -->
+  <div class="sheet-backdrop" id="signup" aria-hidden="true">
+    <div class="sheet" role="dialog" aria-modal="true" aria-labelledby="signup-title">
+      <div class="grip"></div>
+      <button class="icon-btn" type="button" data-close aria-label="Fermer">✕</button>
+
+      <form id="signup-form" action="https://formspree.io/f/xwvypqww" method="POST" novalidate>
+        <span class="eyebrow">Bientôt sur iPhone</span>
+        <h2 id="signup-title">On vous prévient à la sortie</h2>
+        <p class="intro">Un seul email, le jour où Juste Nous arrive sur l'App Store. Pas de spam, promis.</p>
+        <input type="email" name="email" inputmode="email" autocomplete="email"
+               placeholder="votre@email.com" aria-label="Adresse email" required />
+        <input type="hidden" name="source" value="" />
+        <button type="submit" class="btn btn-block">Me préinscrire</button>
+        <p class="form-msg" role="status" aria-live="polite"></p>
+        <p class="legal">Votre email sert uniquement à vous prévenir du lancement, puis il est supprimé.
+          <a href="privacy.html">Confidentialité</a></p>
+      </form>
+
+      <div class="done" role="status">
+        <div class="big">💌</div>
+        <h2>C'est noté&nbsp;!</h2>
+        <p>Vous serez parmi les premiers prévenus quand Juste Nous arrive sur iPhone.</p>
+        <button class="btn btn-block" type="button" data-close>Super&nbsp;!</button>
+      </div>
+    </div>
   </div>
 
   <script>
     (function () {
       "use strict";
+      var os = document.documentElement.getAttribute("data-os") || "desktop";
+      var params = new URLSearchParams(location.search);
+      var backdrop = document.getElementById("signup");
+      var sheet = backdrop.querySelector(".sheet");
+      var form = document.getElementById("signup-form");
+      var input = form.querySelector('input[type="email"]');
+      var msg = form.querySelector(".form-msg");
+      var lastTrigger = null;
 
-      /* ============================================================
-         1) ATTRIBUTION UTM → tous les boutons Google Play (.play-btn)
-         Les params entrants (utm_*, referrer) sont ré-injectés tels
-         quels ET regroupés dans "referrer" que Play Console lit pour
-         attribuer l'installation.
-         ============================================================ */
-      var incoming = new URLSearchParams(window.location.search);
-      var keep = ["utm_source", "utm_medium", "utm_campaign", "utm_term", "utm_content", "referrer"];
+      // Header : liseré dès qu'on a défilé
+      var topbar = document.getElementById("topbar");
+      var onScroll = function () { topbar.classList.toggle("scrolled", window.scrollY > 8); };
+      window.addEventListener("scroll", onScroll, { passive: true });
+      onScroll();
 
-      document.querySelectorAll(".play-btn").forEach(function (btn) {
-        var base = btn.getAttribute("href").split("#")[0];
-        var parts = base.split("?");
-        var target = new URLSearchParams(parts[1] || "");
-        var referrerBits = [];
-        keep.forEach(function (key) {
-          var val = incoming.get(key);
-          if (val) {
-            target.set(key, val);
-            if (key !== "referrer") referrerBits.push(key + "=" + val);
-          }
-        });
-        if (!incoming.get("referrer") && referrerBits.length) {
-          target.set("referrer", referrerBits.join("&"));
-        }
-        var qs = target.toString();
-        btn.setAttribute("href", parts[0] + (qs ? "?" + qs : ""));
-      });
-
-      /* ============================================================
-         2) Barre collante iOS → défile vers le 1er formulaire email
-         ============================================================ */
-      var stickyIos = document.getElementById("sticky-ios");
-      if (stickyIos) {
-        stickyIos.addEventListener("click", function () {
-          var input = document.querySelector(".waitlist-form input[type='email']");
-          if (input) {
-            input.scrollIntoView({ behavior: "smooth", block: "center" });
-            setTimeout(function () { input.focus(); }, 400);
-          }
-        });
+      function open(source, trigger) {
+        lastTrigger = trigger || null;
+        form.elements.source.value = source;
+        backdrop.classList.add("open");
+        backdrop.setAttribute("aria-hidden", "false");
+        document.body.style.overflow = "hidden";
+        if (!sheet.classList.contains("sent")) setTimeout(function () { input.focus(); }, 280);
+      }
+      function close() {
+        backdrop.classList.remove("open");
+        backdrop.setAttribute("aria-hidden", "true");
+        document.body.style.overflow = "";
+        if (lastTrigger) lastTrigger.focus();
       }
 
-      /* ============================================================
-         3) FORMULAIRES WAITLIST iOS (Formspree, AJAX sans rechargement)
-         Gère TOUS les formulaires .waitlist-form (hero + CTA final).
-         ============================================================ */
-      var os = document.documentElement.getAttribute("data-os") || "desktop";
+      document.querySelectorAll("[data-signup]").forEach(function (b) {
+        b.addEventListener("click", function () { open(b.getAttribute("data-signup"), b); });
+      });
+      backdrop.querySelectorAll("[data-close]").forEach(function (b) { b.addEventListener("click", close); });
+      backdrop.addEventListener("click", function (e) { if (e.target === backdrop) close(); });
+      document.addEventListener("keydown", function (e) { if (e.key === "Escape" && backdrop.classList.contains("open")) close(); });
 
-      document.querySelectorAll(".waitlist-form").forEach(function (form) {
-        var msg = form.querySelector(".form-msg");
-        form.addEventListener("submit", function (e) {
-          e.preventDefault();
-          msg.className = "form-msg";
-          msg.textContent = "";
+      form.addEventListener("submit", function (e) {
+        e.preventDefault();
+        msg.className = "form-msg"; msg.textContent = "";
+        var email = (input.value || "").trim();
+        if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+          msg.className = "form-msg err";
+          msg.textContent = "Oups, cet email n'a pas l'air valide.";
+          input.focus();
+          return;
+        }
+        var btn = form.querySelector('button[type="submit"]');
+        var label = btn.textContent;
+        btn.disabled = true; btn.textContent = "Envoi…";
 
-          var emailInput = form.querySelector('input[type="email"]');
-          var email = (emailInput.value || "").trim();
-          if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+        var data = new FormData(form);
+        data.set("os", os);
+        ["utm_source", "utm_medium", "utm_campaign"].forEach(function (k) { if (params.get(k)) data.set(k, params.get(k)); });
+
+        fetch(form.action, { method: "POST", body: data, headers: { "Accept": "application/json" } })
+          .then(function (res) {
+            if (!res.ok) throw new Error("HTTP " + res.status);
+            form.reset();
+            sheet.classList.add("sent");
+          })
+          .catch(function () {
             msg.className = "form-msg err";
-            msg.textContent = "Oups, cet email n'a pas l'air valide.";
-            emailInput.focus();
-            return;
-          }
-
-          var btn = form.querySelector('button[type="submit"]');
-          var label = btn.textContent;
-          btn.disabled = true;
-          btn.textContent = "Envoi…";
-
-          var endpoint = form.getAttribute("action");
-          if (endpoint.indexOf("{{") !== -1) { // garde-fou : endpoint non configuré
-            btn.disabled = false; btn.textContent = label;
-            msg.className = "form-msg err";
-            msg.textContent = "Formulaire non configuré (endpoint manquant).";
-            return;
-          }
-
-          var data = new FormData(form);
-          data.set("os", os); // trace l'OS d'origine dans Formspree
-
-          fetch(endpoint, { method: "POST", body: data, headers: { "Accept": "application/json" } })
-            .then(function (res) {
-              if (res.ok) {
-                form.reset();
-                msg.className = "form-msg ok";
-                msg.textContent = "C'est noté ! On te prévient dès la sortie iOS. ♥";
-              } else { throw new Error("HTTP " + res.status); }
-            })
-            .catch(function () {
-              msg.className = "form-msg err";
-              msg.textContent = "Erreur d'envoi. Réessaie dans un instant.";
-            })
-            .finally(function () { btn.disabled = false; btn.textContent = label; });
-        });
+            msg.textContent = "Erreur d'envoi. Réessayez dans un instant.";
+          })
+          .finally(function () { btn.disabled = false; btn.textContent = label; });
       });
     })();
   </script>
